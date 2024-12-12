@@ -6,8 +6,8 @@ const config = {
   global: {
     interval: "5m",
     responseTimes: {
-      lifi_bridge: 500, // LiFi cross-chain swaps need more time
-      lifi_swap: 500, // USDC same-chain swaps should be faster
+      lifi_bridge: 2000, // 2 secs
+      lifi_swap: 2000, // 2 secs
       http: 50, // Basic HTTP checks should be very fast
     },
   },
@@ -17,11 +17,11 @@ const config = {
     address: "0x8Ab2ec87870FCde4B11E4a67423107A723626671",
     polygon: "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359", // Polygon USDC contract
   },
-  lifi: {
+  lifi_bridge: {
     amount: "0.1",
     amountWei: "10000000000000000",
     address: "0x8Ab2ec87870FCde4B11E4a67423107A723626671",
-    chains: [
+    evm_chains: [
       { name: "Base", id: "8453" },
       { name: "Mainnet", id: "1" },
       { name: "Arbitrum", id: "42161" },
@@ -32,25 +32,25 @@ const config = {
   http: {
     endpoints: [
       {
-        name: "Example API Health Check",
+        name: "Wayfinder Login",
         group: "api-health",
-        url: "https://api.example.com/health",
+        url: "https://dev.wayfinder.ai",
         expectedStatus: 200,
       },
     ],
   },
 };
 
-function generateLifiChecks() {
-  return config.lifi.chains.flatMap((fromChain, i) =>
-    config.lifi.chains.flatMap((toChain, j) =>
+function generateLifiBridgeChecks() {
+  return config.lifi_bridge.evm_chains.flatMap((fromChain, i) =>
+    config.lifi_bridge.evm_chains.flatMap((toChain, j) =>
       i === j
         ? []
         : [
             {
-              name: `${config.lifi.amount} native on ${fromChain.name} -> native on ${toChain.name}`,
+              name: `${config.lifi_bridge.amount} native on ${fromChain.name} -> native on ${toChain.name}`,
               group: "lifi_bridge",
-              url: `https://li.quest/v1/quote?fromChain=${fromChain.id}&toChain=${toChain.id}&fromToken=0x0000000000000000000000000000000000000000&toToken=0x0000000000000000000000000000000000000000&fromAmount=${config.lifi.amountWei}&fromAddress=${config.lifi.address}&toAddress=${config.lifi.address}&integrator=wayfinder&denyExchanges=1inch`,
+              url: `https://li.quest/v1/quote?fromChain=${fromChain.id}&toChain=${toChain.id}&fromToken=0x0000000000000000000000000000000000000000&toToken=0x0000000000000000000000000000000000000000&fromAmount=${config.lifi_bridge.amountWei}&fromAddress=${config.lifi_bridge.address}&toAddress=${config.lifi_bridge.address}&integrator=wayfinder&denyExchanges=1inch`,
               interval: config.global.interval,
               conditions: [
                 "[STATUS] == 200",
@@ -63,21 +63,26 @@ function generateLifiChecks() {
   );
 }
 
-function generateUsdcChecks() {
-  // Generate same-chain USDC swap checks for Polygon
-  return [
-    {
-      name: `${config.usdc.amount} USDC same-chain swap on Polygon`,
-      group: "lifi_swap",
-      url: `https://li.quest/v1/quote?fromChain=137&toChain=137&fromToken=${config.usdc.polygon}&toToken=${config.usdc.polygon}&fromAmount=${config.usdc.amountWei}&fromAddress=${config.usdc.address}&toAddress=${config.usdc.address}&integrator=wayfinder`,
-      interval: config.global.interval,
-      conditions: [
-        "[STATUS] == 200",
-        "[BODY].status == UP",
-        `[RESPONSE_TIME] < ${config.global.responseTimes.lifi_swap}`,
-      ],
-    },
-  ];
+function generateLifiSwapChecks() {
+  return config.lifi_bridge.evm_chains.flatMap((fromChain, i) =>
+    config.lifi_bridge.evm_chains.flatMap((toChain, j) =>
+      i === j
+        ? [
+            {
+              name: `${config.lifi_swap.amount} USDC same-chain swap on ${fromChain.name}`,
+              group: "lifi_swap",
+              url: `https://li.quest/v1/quote?fromChain=${fromChain.id}&toChain=${fromChain.id}&fromToken=${config.lifi_swap.polygon}&toToken=${config.lifi_swap.polygon}&fromAmount=${config.lifi_swap.amountWei}&fromAddress=${config.lifi_swap.address}&toAddress=${config.lifi_swap.address}&integrator=wayfinder`,
+              interval: config.global.interval,
+              conditions: [
+                "[STATUS] == 200",
+                "[BODY].status == UP",
+                `[RESPONSE_TIME] < ${config.global.responseTimes.lifi_swap}`,
+              ],
+            },
+          ]
+        : []
+    )
+  );
 }
 
 function generateHttpChecks() {
@@ -96,8 +101,8 @@ function generateHttpChecks() {
 // Generate configuration object
 const configuration = {
   endpoints: [
-    ...generateLifiChecks(),
-    ...generateUsdcChecks(),
+    ...generateLifiBridgeChecks(),
+    ...generateLifiSwapChecks(),
     ...generateHttpChecks(),
   ],
 };

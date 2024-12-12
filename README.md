@@ -1,3 +1,12 @@
+### Wayfinder Gatus
+
+Private Gatus instance for health checking dashboard. Used for downstream and self checking.
+
+`config.yaml` - Gatus config, GENERATED.
+`generate-config.js` - Go nuts, then `node generate-config.js`
+
+---
+
 [![Gatus](.github/assets/logo-with-dark-text.png)](https://gatus.io)
 
 ![test](https://github.com/TwiN/gatus/workflows/test/badge.svg?branch=master)
@@ -23,11 +32,15 @@ _Looking for a managed solution? Check out [Gatus.io](https://gatus.io)._
 ```console
 docker run -p 8080:8080 --name gatus twinproduction/gatus
 ```
+
 You can also use GitHub Container Registry if you prefer:
+
 ```console
 docker run -p 8080:8080 --name gatus ghcr.io/twin/gatus
 ```
+
 For more details, see [Usage](#usage)
+
 </details>
 
 > ❤ Like this project? Please consider [sponsoring me](https://github.com/sponsors/TwiN).
@@ -36,8 +49,8 @@ For more details, see [Usage](#usage)
 
 Have any feedback or questions? [Create a discussion](https://github.com/TwiN/gatus/discussions/new).
 
-
 ## Table of Contents
+
 - [Table of Contents](#table-of-contents)
 - [Why Gatus?](#why-gatus)
 - [Features](#features)
@@ -67,14 +80,14 @@ Have any feedback or questions? [Create a discussion](https://github.com/TwiN/ga
     - [Configuring PagerDuty alerts](#configuring-pagerduty-alerts)
     - [Configuring Pushover alerts](#configuring-pushover-alerts)
     - [Configuring Slack alerts](#configuring-slack-alerts)
-    - [Configuring Teams alerts *(Deprecated)*](#configuring-teams-alerts-deprecated)
+    - [Configuring Teams alerts _(Deprecated)_](#configuring-teams-alerts-deprecated)
     - [Configuring Teams Workflow alerts](#configuring-teams-workflow-alerts)
     - [Configuring Telegram alerts](#configuring-telegram-alerts)
     - [Configuring Twilio alerts](#configuring-twilio-alerts)
     - [Configuring AWS SES alerts](#configuring-aws-ses-alerts)
     - [Configuring custom alerts](#configuring-custom-alerts)
-    - [Configuring Zulip alerts](#configuring-zulip-alerts)
     - [Setting a default alert](#setting-a-default-alert)
+    - [Configuring Zulip alerts](#configuring-zulip-alerts)
   - [Maintenance](#maintenance)
   - [Security](#security)
     - [Basic Authentication](#basic-authentication)
@@ -122,9 +135,10 @@ Have any feedback or questions? [Create a discussion](https://github.com/TwiN/ga
   - [Installing as binary](#installing-as-binary)
   - [High level design overview](#high-level-design-overview)
 
-
 ## Why Gatus?
+
 Before getting into the specifics, I want to address the most common question:
+
 > Why would I use Gatus when I can just use Prometheus’ Alertmanager, Cloudwatch or even Splunk?
 
 Neither of these can tell you that there’s a problem if there are no clients actively calling the endpoint.
@@ -140,8 +154,8 @@ if no traffic makes it to your applications. This puts you in a situation where 
 that will notify you about the degradation of your services rather than you reassuring them that you're working on
 fixing the issue before they even know about it.
 
-
 ## Features
+
 The main features of Gatus are:
 
 - **Highly flexible health check conditions**: While checking the response status may be enough for some use cases, Gatus goes much further and allows you to add conditions on the response time, the response body and even the IP address.
@@ -155,7 +169,6 @@ The main features of Gatus are:
 
 ![Gatus dashboard conditions](.github/assets/dashboard-conditions.png)
 
-
 ## Usage
 
 <details>
@@ -164,29 +177,34 @@ The main features of Gatus are:
 ```console
 docker run -p 8080:8080 --name gatus twinproduction/gatus
 ```
+
 You can also use GitHub Container Registry if you prefer:
+
 ```console
 docker run -p 8080:8080 --name gatus ghcr.io/twin/gatus
 ```
+
 If you want to create your own configuration, see [Docker](#docker) for information on how to mount a configuration file.
+
 </details>
 
 Here's a simple example:
+
 ```yaml
 endpoints:
-  - name: website                 # Name of your endpoint, can be anything
+  - name: website # Name of your endpoint, can be anything
     url: "https://twin.sh/health"
-    interval: 5m                  # Duration to wait between every status check (default: 60s)
+    interval: 5m # Duration to wait between every status check (default: 60s)
     conditions:
-      - "[STATUS] == 200"         # Status must be 200
-      - "[BODY].status == UP"     # The json path "$.status" must be equal to UP
-      - "[RESPONSE_TIME] < 300"   # Response time must be under 300ms
+      - "[STATUS] == 200" # Status must be 200
+      - "[BODY].status == UP" # The json path "$.status" must be equal to UP
+      - "[RESPONSE_TIME] < 300" # Response time must be under 300ms
 
   - name: make-sure-header-is-rendered
     url: "https://example.org/"
     interval: 60s
     conditions:
-      - "[STATUS] == 200"                          # Status must be 200
+      - "[STATUS] == 200" # Status must be 200
       - "[BODY] == pat(*<h1>Example Domain</h1>*)" # Body must contain the specified header
 ```
 
@@ -200,10 +218,11 @@ You can specify a custom path by setting the `GATUS_CONFIG_PATH` environment var
 
 If `GATUS_CONFIG_PATH` points to a directory, all `*.yaml` and `*.yml` files inside said directory and its
 subdirectories are merged like so:
+
 - All maps/objects are deep merged (i.e. you could define `alerting.slack` in one file and `alerting.pagerduty` in another file)
 - All slices/arrays are appended (i.e. you can define `endpoints` in multiple files and each endpoint will be added to the final list of endpoints)
 - Parameters with a primitive value (e.g. `metrics`, `alerting.slack.webhook-url`, etc.) may only be defined once to forcefully avoid any ambiguity
-    - To clarify, this also means that you could not define `alerting.slack.webhook-url` in two files with different values. All files are merged into one before they are processed. This is by design.
+  - To clarify, this also means that you could not define `alerting.slack.webhook-url` in two files with different values. All files are merged into one before they are processed. This is by design.
 
 > 💡 You can also use environment variables in the configuration file (e.g. `$DOMAIN`, `${DOMAIN}`)
 >
@@ -211,10 +230,10 @@ subdirectories are merged like so:
 
 If you want to test it locally, see [Docker](#docker).
 
-
 ## Configuration
+
 | Parameter                    | Description                                                                                                                          | Default                    |
-|:-----------------------------|:-------------------------------------------------------------------------------------------------------------------------------------|:---------------------------|
+| :--------------------------- | :----------------------------------------------------------------------------------------------------------------------------------- | :------------------------- |
 | `metrics`                    | Whether to expose metrics at `/metrics`.                                                                                             | `false`                    |
 | `storage`                    | [Storage configuration](#storage).                                                                                                   | `{}`                       |
 | `alerting`                   | [Alerting configuration](#alerting).                                                                                                 | `{}`                       |
@@ -245,12 +264,13 @@ Conversely, if you want less verbose logging, you can set the aforementioned env
 The default value for `GATUS_LOG_LEVEL` is `INFO`.
 
 ### Endpoints
+
 Endpoints are URLs, applications, or services that you want to monitor. Each endpoint has a list of conditions that are
 evaluated on an interval that you define. If any condition fails, the endpoint is considered as unhealthy.
 You can then configure alerts to be triggered when an endpoint is unhealthy once a certain threshold is reached.
 
 | Parameter                                       | Description                                                                                                                                 | Default                    |
-|:------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------|
+| :---------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------ | :------------------------- |
 | `endpoints`                                     | List of endpoints to monitor.                                                                                                               | Required `[]`              |
 | `endpoints[].enabled`                           | Whether to monitor the endpoint.                                                                                                            | `true`                     |
 | `endpoints[].name`                              | Name of the endpoint. Can be anything.                                                                                                      | Required `""`              |
@@ -277,18 +297,19 @@ You can then configure alerts to be triggered when an endpoint is unhealthy once
 | `endpoints[].ui.dont-resolve-failed-conditions` | Whether to resolve failed conditions for the UI.                                                                                            | `false`                    |
 | `endpoints[].ui.badge.reponse-time`             | List of response time thresholds. Each time a threshold is reached, the badge has a different color.                                        | `[50, 200, 300, 500, 750]` |
 
-
 ### External Endpoints
+
 Unlike regular endpoints, external endpoints are not monitored by Gatus, but they are instead pushed programmatically.
 This allows you to monitor anything you want, even when what you want to check lives in an environment that would not normally be accessible by Gatus.
 
 For instance:
+
 - You can create your own agent that lives in a private network and pushes the status of your services to a publicly-exposed Gatus instance
 - You can monitor services that are not supported by Gatus
 - You can implement your own monitoring system while using Gatus as the dashboard
 
 | Parameter                      | Description                                                                                                            | Default       |
-|:-------------------------------|:-----------------------------------------------------------------------------------------------------------------------|:--------------|
+| :----------------------------- | :--------------------------------------------------------------------------------------------------------------------- | :------------ |
 | `external-endpoints`           | List of endpoints to monitor.                                                                                          | `[]`          |
 | `external-endpoints[].enabled` | Whether to monitor the endpoint.                                                                                       | `true`        |
 | `external-endpoints[].name`    | Name of the endpoint. Can be anything.                                                                                 | Required `""` |
@@ -297,6 +318,7 @@ For instance:
 | `external-endpoints[].alerts`  | List of all alerts for a given endpoint. <br />See [Alerting](#alerting).                                              | `[]`          |
 
 Example:
+
 ```yaml
 external-endpoints:
   - name: ext-ep-test
@@ -309,10 +331,13 @@ external-endpoints:
 ```
 
 To push the status of an external endpoint, the request would have to look like this:
+
 ```
 POST /api/v1/endpoints/{key}/external?success={success}&error={error}
 ```
+
 Where:
+
 - `{key}` has the pattern `<GROUP_NAME>_<ENDPOINT_NAME>` in which both variables have ` `, `/`, `_`, `,` and `.` replaced by `-`.
   - Using the example configuration above, the key would be `core_ext-ep-test`.
 - `{success}` is a boolean (`true` or `false`) value indicating whether the health check was successful or not.
@@ -320,12 +345,12 @@ Where:
 
 You must also pass the token as a `Bearer` token in the `Authorization` header.
 
-
 ### Conditions
+
 Here are some examples of conditions you can use:
 
 | Condition                        | Description                                         | Passing values             | Failing values   |
-|:---------------------------------|:----------------------------------------------------|:---------------------------|------------------|
+| :------------------------------- | :-------------------------------------------------- | :------------------------- | ---------------- |
 | `[STATUS] == 200`                | Status must be equal to 200                         | 200                        | 201, 404, ...    |
 | `[STATUS] < 300`                 | Status must lower than 300                          | 200, 201, 299              | 301, 302, ...    |
 | `[STATUS] <= 299`                | Status must be less than or equal to 299            | 200, 201, 299              | 301, 302, ...    |
@@ -347,10 +372,10 @@ Here are some examples of conditions you can use:
 | `[CERTIFICATE_EXPIRATION] > 48h` | Certificate expiration is more than 48h away        | 49h, 50h, 123h             | 1h, 24h, ...     |
 | `[DOMAIN_EXPIRATION] > 720h`     | The domain must expire in more than 720h            | 4000h                      | 1h, 24h, ...     |
 
-
 #### Placeholders
+
 | Placeholder                | Description                                                                               | Example of resolved value                    |
-|:---------------------------|:------------------------------------------------------------------------------------------|:---------------------------------------------|
+| :------------------------- | :---------------------------------------------------------------------------------------- | :------------------------------------------- |
 | `[STATUS]`                 | Resolves into the HTTP status of the request                                              | `404`                                        |
 | `[RESPONSE_TIME]`          | Resolves into the response time the request took, in ms                                   | `10`                                         |
 | `[IP]`                     | Resolves into the IP of the target host                                                   | `192.168.0.232`                              |
@@ -360,10 +385,10 @@ Here are some examples of conditions you can use:
 | `[DOMAIN_EXPIRATION]`      | Resolves into the duration before the domain expires (valid units are "s", "m", "h".)     | `24h`, `48h`, `1234h56m78s`                  |
 | `[DNS_RCODE]`              | Resolves into the DNS status of the response                                              | `NOERROR`                                    |
 
-
 #### Functions
+
 | Function | Description                                                                                                                                                                                                                         | Example                            |
-|:---------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-----------------------------------|
+| :------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------- |
 | `len`    | If the given path leads to an array, returns its length. Otherwise, the JSON at the given path is minified and converted to a string, and the resulting number of characters is returned. Works only with the `[BODY]` placeholder. | `len([BODY].username) > 8`         |
 | `has`    | Returns `true` or `false` based on whether a given path is valid. Works only with the `[BODY]` placeholder.                                                                                                                         | `has([BODY].errors) == false`      |
 | `pat`    | Specifies that the string passed as parameter should be evaluated as a pattern. Works only with `==` and `!=`.                                                                                                                      | `[IP] == pat(192.168.*)`           |
@@ -371,10 +396,10 @@ Here are some examples of conditions you can use:
 
 > 💡 Use `pat` only when you need to. `[STATUS] == pat(2*)` is a lot more expensive than `[STATUS] < 300`.
 
-
 ### Storage
+
 | Parameter         | Description                                                                                                                                        | Default    |
-|:------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------|:-----------|
+| :---------------- | :------------------------------------------------------------------------------------------------------------------------------------------------- | :--------- |
 | `storage`         | Storage configuration                                                                                                                              | `{}`       |
 | `storage.path`    | Path to persist the data in. Only supported for types `sqlite` and `postgres`.                                                                     | `""`       |
 | `storage.type`    | Type of storage. Valid types: `memory`, `sqlite`, `postgres`.                                                                                      | `"memory"` |
@@ -384,35 +409,41 @@ The results for each endpoint health check as well as the data for uptime and th
 so that they can be displayed on the dashboard. These parameters allow you to configure the storage in question.
 
 - If `storage.type` is `memory` (default):
+
 ```yaml
 # Note that this is the default value, and you can omit the storage configuration altogether to achieve the same result.
 # Because the data is stored in memory, the data will not survive a restart.
 storage:
   type: memory
 ```
+
 - If `storage.type` is `sqlite`, `storage.path` must not be blank:
+
 ```yaml
 storage:
   type: sqlite
   path: data.db
 ```
+
 See [examples/docker-compose-sqlite-storage](.examples/docker-compose-sqlite-storage) for an example.
 
 - If `storage.type` is `postgres`, `storage.path` must be the connection URL:
+
 ```yaml
 storage:
   type: postgres
   path: "postgres://user:password@127.0.0.1:5432/gatus?sslmode=disable"
 ```
+
 See [examples/docker-compose-postgres-storage](.examples/docker-compose-postgres-storage) for an example.
 
-
 ### Client configuration
+
 In order to support a wide range of environments, each monitored endpoint has a unique configuration for
 the client used to send the request.
 
 | Parameter                              | Description                                                                 | Default         |
-|:---------------------------------------|:----------------------------------------------------------------------------|:----------------|
+| :------------------------------------- | :-------------------------------------------------------------------------- | :-------------- |
 | `client.insecure`                      | Whether to skip verifying the server's certificate chain and host name.     | `false`         |
 | `client.ignore-redirect`               | Whether to ignore redirects (true) or follow them (false, default).         | `false`         |
 | `client.timeout`                       | Duration before timing out.                                                 | `10s`           |
@@ -429,7 +460,6 @@ the client used to send the request.
 | `client.tls.private-key-file`          | Path to a client private key (in PEM format) for mTLS configurations.       | `""`            |
 | `client.tls.renegotiation`             | Type of renegotiation support to provide. (`never`, `freely`, `once`).      | `"never"`       |
 | `client.network`                       | The network to use for ICMP endpoint client (`ip`, `ip4` or `ip6`).         | `"ip"`          |
-
 
 > 📝 Some of these parameters are ignored based on the type of endpoint. For instance, there's no certificate involved
 > in ICMP requests (ping), therefore, setting `client.insecure` to `true` for an endpoint of that type will not do anything.
@@ -482,7 +512,7 @@ endpoints:
         token-url: https://your-token-server/token
         client-id: 00000000-0000-0000-0000-000000000000
         client-secret: your-client-secret
-        scopes: ['https://your.health.api/.default']
+        scopes: ["https://your.health.api/.default"]
     conditions:
       - "[STATUS] == 200"
 ```
@@ -520,13 +550,14 @@ endpoints:
 > 📝 Note that if running in a container, you must volume mount the certificate and key into the container.
 
 ### Alerting
+
 Gatus supports multiple alerting providers, such as Slack and PagerDuty, and supports different alerts for each
 individual endpoints with configurable descriptions and thresholds.
 
 Alerts are configured at the endpoint level like so:
 
 | Parameter                    | Description                                                                    | Default       |
-|:-----------------------------|:-------------------------------------------------------------------------------|:--------------|
+| :--------------------------- | :----------------------------------------------------------------------------- | :------------ |
 | `alerts`                     | List of all alerts for a given endpoint.                                       | `[]`          |
 | `alerts[].type`              | Type of alert. <br />See table below for all valid types.                      | Required `""` |
 | `alerts[].enabled`           | Whether to enable the alert.                                                   | `true`        |
@@ -536,6 +567,7 @@ Alerts are configured at the endpoint level like so:
 | `alerts[].description`       | Description of the alert. Will be included in the alert sent.                  | `""`          |
 
 Here's an example of what an alert configuration might look like at the endpoint level:
+
 ```yaml
 endpoints:
   - name: example
@@ -551,33 +583,33 @@ endpoints:
 > 📝 If an alerting provider is not properly configured, all alerts configured with the provider's type will be
 > ignored.
 
-| Parameter                 | Description                                                                                                                              | Default |
-|:--------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------|:--------|
-| `alerting.custom`         | Configuration for custom actions on failure or alerts. <br />See [Configuring Custom alerts](#configuring-custom-alerts).                | `{}`    |
-| `alerting.discord`        | Configuration for alerts of type `discord`. <br />See [Configuring Discord alerts](#configuring-discord-alerts).                         | `{}`    |
-| `alerting.email`          | Configuration for alerts of type `email`. <br />See [Configuring Email alerts](#configuring-email-alerts).                               | `{}`    |
-| `alerting.github`         | Configuration for alerts of type `github`. <br />See [Configuring GitHub alerts](#configuring-github-alerts).                            | `{}`    |
-| `alerting.gitlab`         | Configuration for alerts of type `gitlab`. <br />See [Configuring GitLab alerts](#configuring-gitlab-alerts).                            | `{}`    |
-| `alerting.googlechat`     | Configuration for alerts of type `googlechat`. <br />See [Configuring Google Chat alerts](#configuring-google-chat-alerts).              | `{}`    |
-| `alerting.gotify`         | Configuration for alerts of type `gotify`. <br />See [Configuring Gotify alerts](#configuring-gotify-alerts).                            | `{}`    |
-| `alerting.jetbrainsspace` | Configuration for alerts of type `jetbrainsspace`. <br />See [Configuring JetBrains Space alerts](#configuring-jetbrains-space-alerts).  | `{}`    |
-| `alerting.matrix`         | Configuration for alerts of type `matrix`. <br />See [Configuring Matrix alerts](#configuring-matrix-alerts).                            | `{}`    |
-| `alerting.mattermost`     | Configuration for alerts of type `mattermost`. <br />See [Configuring Mattermost alerts](#configuring-mattermost-alerts).                | `{}`    |
-| `alerting.messagebird`    | Configuration for alerts of type `messagebird`. <br />See [Configuring Messagebird alerts](#configuring-messagebird-alerts).             | `{}`    |
-| `alerting.ntfy`           | Configuration for alerts of type `ntfy`. <br />See [Configuring Ntfy alerts](#configuring-ntfy-alerts).                                  | `{}`    |
-| `alerting.opsgenie`       | Configuration for alerts of type `opsgenie`. <br />See [Configuring Opsgenie alerts](#configuring-opsgenie-alerts).                      | `{}`    |
-| `alerting.pagerduty`      | Configuration for alerts of type `pagerduty`. <br />See [Configuring PagerDuty alerts](#configuring-pagerduty-alerts).                   | `{}`    |
-| `alerting.pushover`       | Configuration for alerts of type `pushover`. <br />See [Configuring Pushover alerts](#configuring-pushover-alerts).                      | `{}`    |
-| `alerting.slack`          | Configuration for alerts of type `slack`. <br />See [Configuring Slack alerts](#configuring-slack-alerts).                               | `{}`    |
-| `alerting.teams`          | Configuration for alerts of type `teams`. *(Deprecated)* <br />See [Configuring Teams alerts](#configuring-teams-alerts-deprecated).     | `{}`    |
-| `alerting.teams-workflows`  | Configuration for alerts of type `teams-workflows`. <br />See [Configuring Teams Workflow alerts](#configuring-teams-workflow-alerts).     | `{}`    |
-| `alerting.telegram`       | Configuration for alerts of type `telegram`. <br />See [Configuring Telegram alerts](#configuring-telegram-alerts).                      | `{}`    |
-| `alerting.twilio`         | Settings for alerts of type `twilio`. <br />See [Configuring Twilio alerts](#configuring-twilio-alerts).                                 | `{}`    |
-
+| Parameter                  | Description                                                                                                                             | Default |
+| :------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------- | :------ |
+| `alerting.custom`          | Configuration for custom actions on failure or alerts. <br />See [Configuring Custom alerts](#configuring-custom-alerts).               | `{}`    |
+| `alerting.discord`         | Configuration for alerts of type `discord`. <br />See [Configuring Discord alerts](#configuring-discord-alerts).                        | `{}`    |
+| `alerting.email`           | Configuration for alerts of type `email`. <br />See [Configuring Email alerts](#configuring-email-alerts).                              | `{}`    |
+| `alerting.github`          | Configuration for alerts of type `github`. <br />See [Configuring GitHub alerts](#configuring-github-alerts).                           | `{}`    |
+| `alerting.gitlab`          | Configuration for alerts of type `gitlab`. <br />See [Configuring GitLab alerts](#configuring-gitlab-alerts).                           | `{}`    |
+| `alerting.googlechat`      | Configuration for alerts of type `googlechat`. <br />See [Configuring Google Chat alerts](#configuring-google-chat-alerts).             | `{}`    |
+| `alerting.gotify`          | Configuration for alerts of type `gotify`. <br />See [Configuring Gotify alerts](#configuring-gotify-alerts).                           | `{}`    |
+| `alerting.jetbrainsspace`  | Configuration for alerts of type `jetbrainsspace`. <br />See [Configuring JetBrains Space alerts](#configuring-jetbrains-space-alerts). | `{}`    |
+| `alerting.matrix`          | Configuration for alerts of type `matrix`. <br />See [Configuring Matrix alerts](#configuring-matrix-alerts).                           | `{}`    |
+| `alerting.mattermost`      | Configuration for alerts of type `mattermost`. <br />See [Configuring Mattermost alerts](#configuring-mattermost-alerts).               | `{}`    |
+| `alerting.messagebird`     | Configuration for alerts of type `messagebird`. <br />See [Configuring Messagebird alerts](#configuring-messagebird-alerts).            | `{}`    |
+| `alerting.ntfy`            | Configuration for alerts of type `ntfy`. <br />See [Configuring Ntfy alerts](#configuring-ntfy-alerts).                                 | `{}`    |
+| `alerting.opsgenie`        | Configuration for alerts of type `opsgenie`. <br />See [Configuring Opsgenie alerts](#configuring-opsgenie-alerts).                     | `{}`    |
+| `alerting.pagerduty`       | Configuration for alerts of type `pagerduty`. <br />See [Configuring PagerDuty alerts](#configuring-pagerduty-alerts).                  | `{}`    |
+| `alerting.pushover`        | Configuration for alerts of type `pushover`. <br />See [Configuring Pushover alerts](#configuring-pushover-alerts).                     | `{}`    |
+| `alerting.slack`           | Configuration for alerts of type `slack`. <br />See [Configuring Slack alerts](#configuring-slack-alerts).                              | `{}`    |
+| `alerting.teams`           | Configuration for alerts of type `teams`. _(Deprecated)_ <br />See [Configuring Teams alerts](#configuring-teams-alerts-deprecated).    | `{}`    |
+| `alerting.teams-workflows` | Configuration for alerts of type `teams-workflows`. <br />See [Configuring Teams Workflow alerts](#configuring-teams-workflow-alerts).  | `{}`    |
+| `alerting.telegram`        | Configuration for alerts of type `telegram`. <br />See [Configuring Telegram alerts](#configuring-telegram-alerts).                     | `{}`    |
+| `alerting.twilio`          | Settings for alerts of type `twilio`. <br />See [Configuring Twilio alerts](#configuring-twilio-alerts).                                | `{}`    |
 
 #### Configuring Discord alerts
+
 | Parameter                                  | Description                                                                                | Default                             |
-|:-------------------------------------------|:-------------------------------------------------------------------------------------------|:------------------------------------|
+| :----------------------------------------- | :----------------------------------------------------------------------------------------- | :---------------------------------- |
 | `alerting.discord`                         | Configuration for alerts of type `discord`                                                 | `{}`                                |
 | `alerting.discord.webhook-url`             | Discord Webhook URL                                                                        | Required `""`                       |
 | `alerting.discord.title`                   | Title of the notification                                                                  | `":helmet_with_white_cross: Gatus"` |
@@ -605,10 +637,10 @@ endpoints:
         send-on-resolved: true
 ```
 
-
 #### Configuring Email alerts
+
 | Parameter                          | Description                                                                                   | Default       |
-|:-----------------------------------|:----------------------------------------------------------------------------------------------|:--------------|
+| :--------------------------------- | :-------------------------------------------------------------------------------------------- | :------------ |
 | `alerting.email`                   | Configuration for alerts of type `email`                                                      | `{}`          |
 | `alerting.email.from`              | Email used to send the alert                                                                  | Required `""` |
 | `alerting.email.username`          | Username of the SMTP server used to send the alert. If empty, uses `alerting.email.from`.     | `""`          |
@@ -669,12 +701,12 @@ endpoints:
 
 #### Configuring Gitea alerts
 
-| Parameter                        | Description                                                                                                | Default       |
-|:---------------------------------|:-----------------------------------------------------------------------------------------------------------|:--------------|
-| `alerting.gitea`                | Configuration for alerts of type `gitea`                                                                  | `{}`          |
-| `alerting.gitea.repository-url` | Gitea repository URL (e.g. `https://gitea.com/TwiN/example`)                                             | Required `""` |
+| Parameter                       | Description                                                                                                | Default       |
+| :------------------------------ | :--------------------------------------------------------------------------------------------------------- | :------------ |
+| `alerting.gitea`                | Configuration for alerts of type `gitea`                                                                   | `{}`          |
+| `alerting.gitea.repository-url` | Gitea repository URL (e.g. `https://gitea.com/TwiN/example`)                                               | Required `""` |
 | `alerting.gitea.token`          | Personal access token to use for authentication. <br />Must have at least RW on issues and RO on metadata. | Required `""` |
-| `alerting.github.default-alert`  | Default alert configuration. <br />See [Setting a default alert](#setting-a-default-alert).                | N/A           |
+| `alerting.github.default-alert` | Default alert configuration. <br />See [Setting a default alert](#setting-a-default-alert).                | N/A           |
 
 The Gitea alerting provider creates an issue prefixed with `alert(gatus):` and suffixed with the endpoint's display
 name for each alert. If `send-on-resolved` is set to `true` on the endpoint alert, the issue will be automatically
@@ -707,7 +739,7 @@ endpoints:
 #### Configuring GitHub alerts
 
 | Parameter                        | Description                                                                                                | Default       |
-|:---------------------------------|:-----------------------------------------------------------------------------------------------------------|:--------------|
+| :------------------------------- | :--------------------------------------------------------------------------------------------------------- | :------------ |
 | `alerting.github`                | Configuration for alerts of type `github`                                                                  | `{}`          |
 | `alerting.github.repository-url` | GitHub repository URL (e.g. `https://github.com/TwiN/example`)                                             | Required `""` |
 | `alerting.github.token`          | Personal access token to use for authentication. <br />Must have at least RW on issues and RO on metadata. | Required `""` |
@@ -742,8 +774,9 @@ endpoints:
 ![GitHub alert](.github/assets/github-alerts.png)
 
 #### Configuring GitLab alerts
+
 | Parameter                           | Description                                                                                                         | Default       |
-|:------------------------------------|:--------------------------------------------------------------------------------------------------------------------|:--------------|
+| :---------------------------------- | :------------------------------------------------------------------------------------------------------------------ | :------------ |
 | `alerting.gitlab`                   | Configuration for alerts of type `gitlab`                                                                           | `{}`          |
 | `alerting.gitlab.webhook-url`       | GitLab alert webhook URL (e.g. `https://gitlab.com/yourusername/example/alerts/notify/gatus/xxxxxxxxxxxxxxxx.json`) | Required `""` |
 | `alerting.gitlab.authorization-key` | GitLab alert authorization key.                                                                                     | Required `""` |
@@ -782,10 +815,10 @@ endpoints:
 
 ![GitLab alert](.github/assets/gitlab-alerts.png)
 
-
 #### Configuring Google Chat alerts
+
 | Parameter                                     | Description                                                                                 | Default       |
-|:----------------------------------------------|:--------------------------------------------------------------------------------------------|:--------------|
+| :-------------------------------------------- | :------------------------------------------------------------------------------------------ | :------------ |
 | `alerting.googlechat`                         | Configuration for alerts of type `googlechat`                                               | `{}`          |
 | `alerting.googlechat.webhook-url`             | Google Chat Webhook URL                                                                     | Required `""` |
 | `alerting.googlechat.client`                  | Client configuration. <br />See [Client configuration](#client-configuration).              | `{}`          |
@@ -813,16 +846,16 @@ endpoints:
         send-on-resolved: true
 ```
 
-
 #### Configuring Gotify alerts
-| Parameter                                     | Description                                                                                 | Default               |
-|:----------------------------------------------|:--------------------------------------------------------------------------------------------|:----------------------|
-| `alerting.gotify`                             | Configuration for alerts of type `gotify`                                                   | `{}`                  |
-| `alerting.gotify.server-url`                  | Gotify server URL                                                                           | Required `""`         |
-| `alerting.gotify.token`                       | Token that is used for authentication.                                                      | Required `""`         |
-| `alerting.gotify.priority`                    | Priority of the alert according to Gotify standards.                                        | `5`                   |
-| `alerting.gotify.title`                       | Title of the notification                                                                   | `"Gatus: <endpoint>"` |
-| `alerting.gotify.default-alert`               | Default alert configuration. <br />See [Setting a default alert](#setting-a-default-alert). | N/A                   |
+
+| Parameter                       | Description                                                                                 | Default               |
+| :------------------------------ | :------------------------------------------------------------------------------------------ | :-------------------- |
+| `alerting.gotify`               | Configuration for alerts of type `gotify`                                                   | `{}`                  |
+| `alerting.gotify.server-url`    | Gotify server URL                                                                           | Required `""`         |
+| `alerting.gotify.token`         | Token that is used for authentication.                                                      | Required `""`         |
+| `alerting.gotify.priority`      | Priority of the alert according to Gotify standards.                                        | `5`                   |
+| `alerting.gotify.title`         | Title of the notification                                                                   | `"Gatus: <endpoint>"` |
+| `alerting.gotify.default-alert` | Default alert configuration. <br />See [Setting a default alert](#setting-a-default-alert). | N/A                   |
 
 ```yaml
 alerting:
@@ -848,17 +881,17 @@ Here's an example of what the notifications look like:
 
 ![Gotify notifications](.github/assets/gotify-alerts.png)
 
-
 #### Configuring JetBrains Space alerts
-| Parameter                                          | Description                                                                                 | Default                |
-|:---------------------------------------------------|:--------------------------------------------------------------------------------------------|:-----------------------|
-| `alerting.jetbrainsspace`                          | Configuration for alerts of type `jetbrainsspace`                                           | `{}`                   |
-| `alerting.jetbrainsspace.project`                  | JetBrains Space project name                                                                | Required `""`          |
-| `alerting.jetbrainsspace.channel-id`               | JetBrains Space Chat Channel ID                                                             | Required `""`          |
-| `alerting.jetbrainsspace.token`                    | Token that is used for authentication.                                                      | Required `""`          |
-| `alerting.jetbrainsspace.default-alert`            | Default alert configuration. <br />See [Setting a default alert](#setting-a-default-alert)  | N/A                    |
-| `alerting.jetbrainsspace.overrides`                | List of overrides that may be prioritized over the default configuration                    | `[]`                   |
-| `alerting.jetbrainsspace.overrides[].group`        | Endpoint group for which the configuration will be overridden by this configuration         | `""`                   |
+
+| Parameter                                   | Description                                                                                | Default       |
+| :------------------------------------------ | :----------------------------------------------------------------------------------------- | :------------ |
+| `alerting.jetbrainsspace`                   | Configuration for alerts of type `jetbrainsspace`                                          | `{}`          |
+| `alerting.jetbrainsspace.project`           | JetBrains Space project name                                                               | Required `""` |
+| `alerting.jetbrainsspace.channel-id`        | JetBrains Space Chat Channel ID                                                            | Required `""` |
+| `alerting.jetbrainsspace.token`             | Token that is used for authentication.                                                     | Required `""` |
+| `alerting.jetbrainsspace.default-alert`     | Default alert configuration. <br />See [Setting a default alert](#setting-a-default-alert) | N/A           |
+| `alerting.jetbrainsspace.overrides`         | List of overrides that may be prioritized over the default configuration                   | `[]`          |
+| `alerting.jetbrainsspace.overrides[].group` | Endpoint group for which the configuration will be overridden by this configuration        | `""`          |
 
 ```yaml
 alerting:
@@ -883,15 +916,15 @@ Here's an example of what the notifications look like:
 
 ![JetBrains Space notifications](.github/assets/jetbrains-space-alerts.png)
 
-
 #### Configuring Matrix alerts
-| Parameter                                | Description                                                                                | Default                            |
-|:-----------------------------------------|:-------------------------------------------------------------------------------------------|:-----------------------------------|
-| `alerting.matrix`                        | Configuration for alerts of type `matrix`                                                  | `{}`                               |
-| `alerting.matrix.server-url`             | Homeserver URL                                                                             | `https://matrix-client.matrix.org` |
-| `alerting.matrix.access-token`           | Bot user access token (see https://webapps.stackexchange.com/q/131056)                     | Required `""`                      |
-| `alerting.matrix.internal-room-id`       | Internal room ID of room to send alerts to (can be found in Room Settings > Advanced)      | Required `""`                      |
-| `alerting.matrix.default-alert`          | Default alert configuration. <br />See [Setting a default alert](#setting-a-default-alert) | N/A                                |
+
+| Parameter                          | Description                                                                                | Default                            |
+| :--------------------------------- | :----------------------------------------------------------------------------------------- | :--------------------------------- |
+| `alerting.matrix`                  | Configuration for alerts of type `matrix`                                                  | `{}`                               |
+| `alerting.matrix.server-url`       | Homeserver URL                                                                             | `https://matrix-client.matrix.org` |
+| `alerting.matrix.access-token`     | Bot user access token (see https://webapps.stackexchange.com/q/131056)                     | Required `""`                      |
+| `alerting.matrix.internal-room-id` | Internal room ID of room to send alerts to (can be found in Room Settings > Advanced)      | Required `""`                      |
+| `alerting.matrix.default-alert`    | Default alert configuration. <br />See [Setting a default alert](#setting-a-default-alert) | N/A                                |
 
 ```yaml
 alerting:
@@ -914,10 +947,10 @@ endpoints:
         description: "healthcheck failed"
 ```
 
-
 #### Configuring Mattermost alerts
+
 | Parameter                                     | Description                                                                                 | Default       |
-|:----------------------------------------------|:--------------------------------------------------------------------------------------------|:--------------|
+| :-------------------------------------------- | :------------------------------------------------------------------------------------------ | :------------ |
 | `alerting.mattermost`                         | Configuration for alerts of type `mattermost`                                               | `{}`          |
 | `alerting.mattermost.webhook-url`             | Mattermost Webhook URL                                                                      | Required `""` |
 | `alerting.mattermost.channel`                 | Mattermost channel name override (optional)                                                 | `""`          |
@@ -952,10 +985,10 @@ Here's an example of what the notifications look like:
 
 ![Mattermost notifications](.github/assets/mattermost-alerts.png)
 
-
 #### Configuring Messagebird alerts
+
 | Parameter                            | Description                                                                                | Default       |
-|:-------------------------------------|:-------------------------------------------------------------------------------------------|:--------------|
+| :----------------------------------- | :----------------------------------------------------------------------------------------- | :------------ |
 | `alerting.messagebird`               | Configuration for alerts of type `messagebird`                                             | `{}`          |
 | `alerting.messagebird.access-key`    | Messagebird access key                                                                     | Required `""` |
 | `alerting.messagebird.originator`    | The sender of the message                                                                  | Required `""` |
@@ -963,6 +996,7 @@ Here's an example of what the notifications look like:
 | `alerting.messagebird.default-alert` | Default alert configuration. <br />See [Setting a default alert](#setting-a-default-alert) | N/A           |
 
 Example of sending **SMS** text message alert using Messagebird:
+
 ```yaml
 alerting:
   messagebird:
@@ -985,10 +1019,10 @@ endpoints:
         description: "healthcheck failed"
 ```
 
-
 #### Configuring Ntfy alerts
+
 | Parameter                            | Description                                                                                                                                  | Default           |
-|:-------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------|:------------------|
+| :----------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------- | :---------------- |
 | `alerting.ntfy`                      | Configuration for alerts of type `ntfy`                                                                                                      | `{}`              |
 | `alerting.ntfy.topic`                | Topic at which the alert will be sent                                                                                                        | Required `""`     |
 | `alerting.ntfy.url`                  | The URL of the target server                                                                                                                 | `https://ntfy.sh` |
@@ -1012,6 +1046,7 @@ endpoints:
 and mobile notifications, making it an awesome addition to Gatus.
 
 Example:
+
 ```yaml
 alerting:
   ntfy:
@@ -1051,10 +1086,10 @@ endpoints:
         description: example
 ```
 
-
 #### Configuring Opsgenie alerts
+
 | Parameter                         | Description                                                                                | Default              |
-|:----------------------------------|:-------------------------------------------------------------------------------------------|:---------------------|
+| :-------------------------------- | :----------------------------------------------------------------------------------------- | :------------------- |
 | `alerting.opsgenie`               | Configuration for alerts of type `opsgenie`                                                | `{}`                 |
 | `alerting.opsgenie.api-key`       | Opsgenie API Key                                                                           | Required `""`        |
 | `alerting.opsgenie.priority`      | Priority level of the alert.                                                               | `P1`                 |
@@ -1072,10 +1107,10 @@ alerting:
     api-key: "00000000-0000-0000-0000-000000000000"
 ```
 
-
 #### Configuring PagerDuty alerts
+
 | Parameter                                        | Description                                                                                | Default |
-|:-------------------------------------------------|:-------------------------------------------------------------------------------------------|:--------|
+| :----------------------------------------------- | :----------------------------------------------------------------------------------------- | :------ |
 | `alerting.pagerduty`                             | Configuration for alerts of type `pagerduty`                                               | `{}`    |
 | `alerting.pagerduty.integration-key`             | PagerDuty Events API v2 integration key                                                    | `""`    |
 | `alerting.pagerduty.overrides`                   | List of overrides that may be prioritized over the default configuration                   | `[]`    |
@@ -1089,6 +1124,7 @@ parameter to `true` will not create another incident but mark the incident as re
 PagerDuty instead.
 
 Behavior:
+
 - By default, `alerting.pagerduty.integration-key` is used as the integration key
 - If the endpoint being evaluated belongs to a group (`endpoints[].group`) matching the value of `alerting.pagerduty.overrides[].group`, the provider will use that override's integration key instead of `alerting.pagerduty.integration-key`'s
 
@@ -1132,10 +1168,10 @@ endpoints:
         description: "healthcheck failed"
 ```
 
-
 #### Configuring Pushover alerts
+
 | Parameter                             | Description                                                                                     | Default                      |
-|:--------------------------------------|:------------------------------------------------------------------------------------------------|:-----------------------------|
+| :------------------------------------ | :---------------------------------------------------------------------------------------------- | :--------------------------- |
 | `alerting.pushover`                   | Configuration for alerts of type `pushover`                                                     | `{}`                         |
 | `alerting.pushover.application-token` | Pushover application token                                                                      | `""`                         |
 | `alerting.pushover.user-key`          | User or group key                                                                               | `""`                         |
@@ -1167,16 +1203,16 @@ endpoints:
         description: "healthcheck failed"
 ```
 
-
 #### Configuring Slack alerts
-| Parameter                                 | Description                                                                                | Default       |
-|:------------------------------------------|:-------------------------------------------------------------------------------------------|:--------------|
-| `alerting.slack`                          | Configuration for alerts of type `slack`                                                   | `{}`          |
-| `alerting.slack.webhook-url`              | Slack Webhook URL                                                                          | Required `""` |
-| `alerting.slack.default-alert`            | Default alert configuration. <br />See [Setting a default alert](#setting-a-default-alert) | N/A           |
-| `alerting.slack.overrides`                | List of overrides that may be prioritized over the default configuration                   | `[]`          |
-| `alerting.slack.overrides[].group`        | Endpoint group for which the configuration will be overridden by this configuration        | `""`          |
-| `alerting.slack.overrides[].webhook-url`  | Slack Webhook URL                                                                          | `""`          |
+
+| Parameter                                | Description                                                                                | Default       |
+| :--------------------------------------- | :----------------------------------------------------------------------------------------- | :------------ |
+| `alerting.slack`                         | Configuration for alerts of type `slack`                                                   | `{}`          |
+| `alerting.slack.webhook-url`             | Slack Webhook URL                                                                          | Required `""` |
+| `alerting.slack.default-alert`           | Default alert configuration. <br />See [Setting a default alert](#setting-a-default-alert) | N/A           |
+| `alerting.slack.overrides`               | List of overrides that may be prioritized over the default configuration                   | `[]`          |
+| `alerting.slack.overrides[].group`       | Endpoint group for which the configuration will be overridden by this configuration        | `""`          |
+| `alerting.slack.overrides[].webhook-url` | Slack Webhook URL                                                                          | `""`          |
 
 ```yaml
 alerting:
@@ -1205,15 +1241,13 @@ Here's an example of what the notifications look like:
 
 ![Slack notifications](.github/assets/slack-alerts.png)
 
+#### Configuring Teams alerts _(Deprecated)_
 
-#### Configuring Teams alerts *(Deprecated)*
-
-> [!CAUTION]
-> **Deprecated:** Office 365 Connectors within Microsoft Teams are being retired ([Source: Microsoft DevBlog](https://devblogs.microsoft.com/microsoft365dev/retirement-of-office-365-connectors-within-microsoft-teams/)).
+> [!CAUTION] > **Deprecated:** Office 365 Connectors within Microsoft Teams are being retired ([Source: Microsoft DevBlog](https://devblogs.microsoft.com/microsoft365dev/retirement-of-office-365-connectors-within-microsoft-teams/)).
 > Existing connectors will continue to work until December 2025. The new [Teams Workflow Alerts](#configuring-teams-workflow-alerts) should be used with Microsoft Workflows instead of this legacy configuration.
 
 | Parameter                                | Description                                                                                | Default             |
-|:-----------------------------------------|:-------------------------------------------------------------------------------------------|:--------------------|
+| :--------------------------------------- | :----------------------------------------------------------------------------------------- | :------------------ |
 | `alerting.teams`                         | Configuration for alerts of type `teams`                                                   | `{}`                |
 | `alerting.teams.webhook-url`             | Teams Webhook URL                                                                          | Required `""`       |
 | `alerting.teams.default-alert`           | Default alert configuration. <br />See [Setting a default alert](#setting-a-default-alert) | N/A                 |
@@ -1271,7 +1305,7 @@ Here's an example of what the notifications look like:
 > This alert is compatible with Workflows for Microsoft Teams. To setup the workflow and get the webhook URL, follow the [Microsoft Documentation](https://support.microsoft.com/en-us/office/create-incoming-webhooks-with-workflows-for-microsoft-teams-8ae491c7-0394-4861-ba59-055e33f75498).
 
 | Parameter                                          | Description                                                                                | Default            |
-|:---------------------------------------------------|:-------------------------------------------------------------------------------------------|:-------------------|
+| :------------------------------------------------- | :----------------------------------------------------------------------------------------- | :----------------- |
 | `alerting.teams-workflows`                         | Configuration for alerts of type `teams`                                                   | `{}`               |
 | `alerting.teams-workflows.webhook-url`             | Teams Webhook URL                                                                          | Required `""`      |
 | `alerting.teams-workflows.title`                   | Title of the notification                                                                  | `"&#x26D1; Gatus"` |
@@ -1320,10 +1354,10 @@ Here's an example of what the notifications look like:
 
 ![Teams Workflow notifications](.github/assets/teams-workflows-alerts.png)
 
-
 #### Configuring Telegram alerts
+
 | Parameter                             | Description                                                                                | Default                    |
-|:--------------------------------------|:-------------------------------------------------------------------------------------------|:---------------------------|
+| :------------------------------------ | :----------------------------------------------------------------------------------------- | :------------------------- |
 | `alerting.telegram`                   | Configuration for alerts of type `telegram`                                                | `{}`                       |
 | `alerting.telegram.token`             | Telegram Bot Token                                                                         | Required `""`              |
 | `alerting.telegram.id`                | Telegram User ID                                                                           | Required `""`              |
@@ -1357,10 +1391,10 @@ Here's an example of what the notifications look like:
 
 ![Telegram notifications](.github/assets/telegram-alerts.png)
 
-
 #### Configuring Twilio alerts
+
 | Parameter                       | Description                                                                                | Default       |
-|:--------------------------------|:-------------------------------------------------------------------------------------------|:--------------|
+| :------------------------------ | :----------------------------------------------------------------------------------------- | :------------ |
 | `alerting.twilio`               | Settings for alerts of type `twilio`                                                       | `{}`          |
 | `alerting.twilio.sid`           | Twilio account SID                                                                         | Required `""` |
 | `alerting.twilio.token`         | Twilio auth token                                                                          | Required `""` |
@@ -1391,10 +1425,10 @@ endpoints:
         description: "healthcheck failed"
 ```
 
-
 #### Configuring AWS SES alerts
+
 | Parameter                            | Description                                                                                | Default       |
-|:-------------------------------------|:-------------------------------------------------------------------------------------------|:--------------|
+| :----------------------------------- | :----------------------------------------------------------------------------------------- | :------------ |
 | `alerting.aws-ses`                   | Settings for alerts of type `aws-ses`                                                      | `{}`          |
 | `alerting.aws-ses.access-key-id`     | AWS Access Key ID                                                                          | Optional `""` |
 | `alerting.aws-ses.secret-access-key` | AWS Secret Access Key                                                                      | Optional `""` |
@@ -1431,10 +1465,10 @@ If the `access-key-id` and `secret-access-key` are not defined Gatus will fall b
 
 Make sure you have the ability to use `ses:SendEmail`.
 
-
 #### Configuring custom alerts
+
 | Parameter                       | Description                                                                                | Default       |
-|:--------------------------------|:-------------------------------------------------------------------------------------------|:--------------|
+| :------------------------------ | :----------------------------------------------------------------------------------------- | :------------ |
 | `alerting.custom`               | Configuration for custom actions on failure or alerts                                      | `{}`          |
 | `alerting.custom.url`           | Custom alerting request url                                                                | Required `""` |
 | `alerting.custom.method`        | Request method                                                                             | `GET`         |
@@ -1451,6 +1485,7 @@ would then check if the endpoint that started failing was part of the recently d
 then automatically roll it back.
 
 Furthermore, you may use the following placeholders in the body (`alerting.custom.body`) and in the url (`alerting.custom.url`):
+
 - `[ALERT_DESCRIPTION]` (resolved from `endpoints[].alerts[].description`)
 - `[ENDPOINT_NAME]` (resolved from `endpoints[].name`)
 - `[ENDPOINT_GROUP]` (resolved from `endpoints[].group`)
@@ -1463,6 +1498,7 @@ The aforementioned placeholder will be replaced by `TRIGGERED` or `RESOLVED` acc
 (details at the end of this section).
 
 For all intents and purposes, we'll configure the custom alert with a Slack webhook, but you can call anything you want.
+
 ```yaml
 alerting:
   custom:
@@ -1489,6 +1525,7 @@ endpoints:
 ```
 
 Note that you can customize the resolved values for the `[ALERT_TRIGGERED_OR_RESOLVED]` placeholder like so:
+
 ```yaml
 alerting:
   custom:
@@ -1497,13 +1534,14 @@ alerting:
         TRIGGERED: "partial_outage"
         RESOLVED: "operational"
 ```
+
 As a result, the `[ALERT_TRIGGERED_OR_RESOLVED]` in the body of first example of this section would be replaced by
 `partial_outage` when an alert is triggered and `operational` when an alert is resolved.
 
-
 #### Setting a default alert
+
 | Parameter                                    | Description                                                                   | Default |
-|:---------------------------------------------|:------------------------------------------------------------------------------|:--------|
+| :------------------------------------------- | :---------------------------------------------------------------------------- | :------ |
 | `alerting.*.default-alert.enabled`           | Whether to enable the alert                                                   | N/A     |
 | `alerting.*.default-alert.failure-threshold` | Number of failures in a row needed before triggering the alert                | N/A     |
 | `alerting.*.default-alert.success-threshold` | Number of successes in a row before an ongoing incident is marked as resolved | N/A     |
@@ -1516,6 +1554,7 @@ While you can specify the alert configuration directly in the endpoint definitio
 long configuration file.
 
 To avoid such problem, you can use the `default-alert` parameter present in each provider configuration:
+
 ```yaml
 alerting:
   slack:
@@ -1528,6 +1567,7 @@ alerting:
 ```
 
 As a result, your Gatus configuration looks a lot tidier:
+
 ```yaml
 endpoints:
   - name: example
@@ -1546,6 +1586,7 @@ endpoints:
 ```
 
 It also allows you to do things like this:
+
 ```yaml
 endpoints:
   - name: example
@@ -1562,6 +1603,7 @@ endpoints:
 ```
 
 Of course, you can also mix alert types:
+
 ```yaml
 alerting:
   slack:
@@ -1592,18 +1634,19 @@ endpoints:
 ```
 
 #### Configuring Zulip alerts
-| Parameter                                | Description                                                                         | Default                             |
-|:-----------------------------------------|:------------------------------------------------------------------------------------|:------------------------------------|
-| `alerting.zulip`                         | Configuration for alerts of type `discord`                                          | `{}`                                |
-| `alerting.zulip.bot-email`               | Bot Email                                                                           | Required `""`                       |
-| `alerting.zulip.bot-api-key`             | Bot API key                                                                         | Required `""`                       |
-| `alerting.zulip.domain`                  | Full organization domain (e.g.: yourZulipDomain.zulipchat.com)                      | Required `""`                       |
-| `alerting.zulip.channel-id`              | The channel ID where Gatus will send the alerts                                     | Required `""`                       |
-| `alerting.zulip.overrides[].group`       | Endpoint group for which the configuration will be overridden by this configuration | `""`                                |
-| `alerting.zulip.overrides[].bot-email`   | .                                                                                   | `""`                                |
-| `alerting.zulip.overrides[].bot-api-key` | .                                                                                   | `""`                                |
-| `alerting.zulip.overrides[].domain`      | .                                                                                   | `""`                                |
-| `alerting.zulip.overrides[].channel-id`  | .                                                                                   | `""`                                |
+
+| Parameter                                | Description                                                                         | Default       |
+| :--------------------------------------- | :---------------------------------------------------------------------------------- | :------------ |
+| `alerting.zulip`                         | Configuration for alerts of type `discord`                                          | `{}`          |
+| `alerting.zulip.bot-email`               | Bot Email                                                                           | Required `""` |
+| `alerting.zulip.bot-api-key`             | Bot API key                                                                         | Required `""` |
+| `alerting.zulip.domain`                  | Full organization domain (e.g.: yourZulipDomain.zulipchat.com)                      | Required `""` |
+| `alerting.zulip.channel-id`              | The channel ID where Gatus will send the alerts                                     | Required `""` |
+| `alerting.zulip.overrides[].group`       | Endpoint group for which the configuration will be overridden by this configuration | `""`          |
+| `alerting.zulip.overrides[].bot-email`   | .                                                                                   | `""`          |
+| `alerting.zulip.overrides[].bot-api-key` | .                                                                                   | `""`          |
+| `alerting.zulip.overrides[].domain`      | .                                                                                   | `""`          |
+| `alerting.zulip.overrides[].channel-id`  | .                                                                                   | `""`          |
 
 ```yaml
 alerting:
@@ -1627,20 +1670,21 @@ endpoints:
         send-on-resolved: true
 ```
 
-
 ### Maintenance
+
 If you have maintenance windows, you may not want to be annoyed by alerts.
 To do that, you'll have to use the maintenance configuration:
 
-| Parameter              | Description                                                                                                                            | Default       |
-|:-----------------------|:---------------------------------------------------------------------------------------------------------------------------------------|:--------------|
-| `maintenance.enabled`  | Whether the maintenance period is enabled                                                                                              | `true`        |
-| `maintenance.start`    | Time at which the maintenance window starts in `hh:mm` format (e.g. `23:00`)                                                           | Required `""` |
-| `maintenance.duration` | Duration of the maintenance window (e.g. `1h`, `30m`)                                                                                  | Required `""` |
-| `maintenance.timezone` | Timezone of the maintenance window format (e.g. `Europe/Amsterdam`).<br />See [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) for more info |  `UTC` |
-| `maintenance.every`    | Days on which the maintenance period applies (e.g. `[Monday, Thursday]`).<br />If left empty, the maintenance window applies every day | `[]`          |
+| Parameter              | Description                                                                                                                                                                                | Default       |
+| :--------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------ |
+| `maintenance.enabled`  | Whether the maintenance period is enabled                                                                                                                                                  | `true`        |
+| `maintenance.start`    | Time at which the maintenance window starts in `hh:mm` format (e.g. `23:00`)                                                                                                               | Required `""` |
+| `maintenance.duration` | Duration of the maintenance window (e.g. `1h`, `30m`)                                                                                                                                      | Required `""` |
+| `maintenance.timezone` | Timezone of the maintenance window format (e.g. `Europe/Amsterdam`).<br />See [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) for more info | `UTC`         |
+| `maintenance.every`    | Days on which the maintenance period applies (e.g. `[Monday, Thursday]`).<br />If left empty, the maintenance window applies every day                                                     | `[]`          |
 
 Here's an example:
+
 ```yaml
 maintenance:
   start: 23:00
@@ -1648,7 +1692,9 @@ maintenance:
   timezone: "Europe/Amsterdam"
   every: [Monday, Thursday]
 ```
+
 Note that you can also specify each day on separate lines:
+
 ```yaml
 maintenance:
   start: 23:00
@@ -1659,23 +1705,24 @@ maintenance:
     - Thursday
 ```
 
-
 ### Security
+
 | Parameter        | Description                  | Default |
-|:-----------------|:-----------------------------|:--------|
+| :--------------- | :--------------------------- | :------ |
 | `security`       | Security configuration       | `{}`    |
 | `security.basic` | HTTP Basic configuration     | `{}`    |
 | `security.oidc`  | OpenID Connect configuration | `{}`    |
 
-
 #### Basic Authentication
+
 | Parameter                               | Description                                                                        | Default       |
-|:----------------------------------------|:-----------------------------------------------------------------------------------|:--------------|
+| :-------------------------------------- | :--------------------------------------------------------------------------------- | :------------ |
 | `security.basic`                        | HTTP Basic configuration                                                           | `{}`          |
 | `security.basic.username`               | Username for Basic authentication.                                                 | Required `""` |
 | `security.basic.password-bcrypt-base64` | Password hashed with Bcrypt and then encoded with base64 for Basic authentication. | Required `""` |
 
 The example below will require that you authenticate with the username `john.doe` and the password `hunter2`:
+
 ```yaml
 security:
   basic:
@@ -1686,10 +1733,10 @@ security:
 > ⚠ Make sure to carefully select to cost of the bcrypt hash. The higher the cost, the longer it takes to compute the hash,
 > and basic auth verifies the password against the hash on every request. As of 2023-01-06, I suggest a cost of 9.
 
-
 #### OIDC
+
 | Parameter                        | Description                                                    | Default       |
-|:---------------------------------|:---------------------------------------------------------------|:--------------|
+| :------------------------------- | :------------------------------------------------------------- | :------------ |
 | `security.oidc`                  | OpenID Connect configuration                                   | `{}`          |
 | `security.oidc.issuer-url`       | Issuer URL                                                     | Required `""` |
 | `security.oidc.redirect-url`     | Redirect URL. Must end with `/authorization-code/callback`     | Required `""` |
@@ -1712,11 +1759,12 @@ security:
 
 Confused? Read [Securing Gatus with OIDC using Auth0](https://twin.sh/articles/56/securing-gatus-with-oidc-using-auth0).
 
-
 ### TLS Encryption
+
 Gatus supports basic encryption with TLS. To enable this, certificate files in PEM format have to be provided.
 
 The example below shows an example configuration which makes gatus respond on port 4443 to HTTPS requests:
+
 ```yaml
 web:
   port: 4443
@@ -1725,13 +1773,13 @@ web:
     private-key-file: "private.key"
 ```
 
-
 ### Metrics
+
 To enable metrics, you must set `metrics` to `true`. Doing so will expose Prometheus-friendly metrics at the `/metrics`
 endpoint on the same port your application is configured to run on (`web.port`).
 
 | Metric name                                  | Type    | Description                                                                | Labels                          | Relevant endpoint types |
-|:---------------------------------------------|:--------|:---------------------------------------------------------------------------|:--------------------------------|:------------------------|
+| :------------------------------------------- | :------ | :------------------------------------------------------------------------- | :------------------------------ | :---------------------- |
 | gatus_results_total                          | counter | Number of results per endpoint                                             | key, group, name, type, success | All                     |
 | gatus_results_code_total                     | counter | Total number of results by code                                            | key, group, name, type, code    | DNS, HTTP               |
 | gatus_results_connected_total                | counter | Total number of results in which a connection was successfully established | key, group, name, type          | All                     |
@@ -1740,10 +1788,10 @@ endpoint on the same port your application is configured to run on (`web.port`).
 
 See [examples/docker-compose-grafana-prometheus](.examples/docker-compose-grafana-prometheus) for further documentation as well as an example.
 
-
 ### Connectivity
+
 | Parameter                       | Description                                | Default       |
-|:--------------------------------|:-------------------------------------------|:--------------|
+| :------------------------------ | :----------------------------------------- | :------------ |
 | `connectivity`                  | Connectivity configuration                 | `{}`          |
 | `connectivity.checker`          | Connectivity checker configuration         | Required `{}` |
 | `connectivity.checker.target`   | Host to use for validating connectivity    | Required `""` |
@@ -1762,11 +1810,12 @@ connectivity:
     interval: 60s
 ```
 
-
 ### Remote instances (EXPERIMENTAL)
+
 This feature allows you to retrieve endpoint statuses from a remote Gatus instance.
 
 There are two main use cases for this:
+
 - You have multiple Gatus instances running on different machines, and you wish to visually expose the statuses through a single dashboard
 - You have one or more Gatus instances that are not publicly accessible (e.g. behind a firewall), and you wish to retrieve
 
@@ -1775,7 +1824,7 @@ there are known issues with this feature. If you'd like to provide some feedback
 Use at your own risk.
 
 | Parameter                          | Description                                  | Default       |
-|:-----------------------------------|:---------------------------------------------|:--------------|
+| :--------------------------------- | :------------------------------------------- | :------------ |
 | `remote`                           | Remote configuration                         | `{}`          |
 | `remote.instances`                 | List of remote instances                     | Required `[]` |
 | `remote.instances.endpoint-prefix` | String to prefix all endpoint names with     | `""`          |
@@ -1788,13 +1837,14 @@ remote:
       url: "https://status.example.org/api/v1/endpoints/statuses"
 ```
 
-
 ## Deployment
+
 Many examples can be found in the [.examples](.examples) folder, but this section will focus on the most popular ways of deploying Gatus.
 
-
 ### Docker
+
 To run Gatus locally with Docker:
+
 ```console
 docker run -p 8080:8080 --name gatus twinproduction/gatus
 ```
@@ -1802,22 +1852,25 @@ docker run -p 8080:8080 --name gatus twinproduction/gatus
 Other than using one of the examples provided in the [.examples](.examples) folder, you can also try it out locally by
 creating a configuration file, we'll call it `config.yaml` for this example, and running the following
 command:
+
 ```console
 docker run -p 8080:8080 --mount type=bind,source="$(pwd)"/config.yaml,target=/config/config.yaml --name gatus twinproduction/gatus
 ```
 
 If you're on Windows, replace `"$(pwd)"` by the absolute path to your current directory, e.g.:
+
 ```console
 docker run -p 8080:8080 --mount type=bind,source=C:/Users/Chris/Desktop/config.yaml,target=/config/config.yaml --name gatus twinproduction/gatus
 ```
 
 To build the image locally:
+
 ```console
 docker build . -t twinproduction/gatus
 ```
 
-
 ### Helm Chart
+
 [Helm](https://helm.sh) must be installed to use the chart.
 Please refer to Helm's [documentation](https://helm.sh/docs/) to get started.
 
@@ -1831,26 +1884,28 @@ helm install gatus twin/gatus
 
 To get more details, please check [chart's configuration](https://github.com/TwiN/helm-charts/blob/master/charts/gatus/README.md).
 
-
 ### Terraform
+
 Gatus can be deployed on Terraform by using the following module: [terraform-kubernetes-gatus](https://github.com/TwiN/terraform-kubernetes-gatus).
 
-
 ## Running the tests
+
 ```console
 go test -v ./...
 ```
 
-
 ## Using in Production
+
 See the [Deployment](#deployment) section.
 
-
 ## FAQ
+
 ### Sending a GraphQL request
+
 By setting `endpoints[].graphql` to true, the body will automatically be wrapped by the standard GraphQL `query` parameter.
 
 For instance, the following configuration:
+
 ```yaml
 endpoints:
   - name: filter-users-by-gender
@@ -1872,12 +1927,15 @@ endpoints:
 ```
 
 will send a `POST` request to `http://localhost:8080/playground` with the following body:
+
 ```json
-{"query":"      {\n        users(gender: \"female\") {\n          id\n          name\n          gender\n          avatar\n        }\n      }"}
+{
+  "query": "      {\n        users(gender: \"female\") {\n          id\n          name\n          gender\n          avatar\n        }\n      }"
+}
 ```
 
-
 ### Recommended interval
+
 > 📝 This does not apply if `disable-monitoring-lock` is set to `true`, as the monitoring lock is what
 > tells Gatus to only evaluate one endpoint at a time.
 
@@ -1896,6 +1954,7 @@ and the request takes 2s to complete, the timestamp between two evaluations will
 
 While this does not prevent Gatus' from performing health checks on all other endpoints, it may cause Gatus to be unable
 to respect the configured interval, for instance:
+
 - Endpoint A has an interval of 5s, and times out after 10s to complete
 - Endpoint B has an interval of 5s, and takes 1ms to complete
 - Endpoint B will be unable to run every 5s, because endpoint A's health evaluation takes longer than its interval
@@ -1906,18 +1965,18 @@ higher interval.
 As a rule of thumb, I personally set the interval for more complex health checks to `5m` (5 minutes) and
 simple health checks used for alerting (PagerDuty/Twilio) to `30s`.
 
-
 ### Default timeouts
+
 | Endpoint type | Timeout |
-|:--------------|:--------|
+| :------------ | :------ |
 | HTTP          | 10s     |
 | TCP           | 10s     |
 | ICMP          | 10s     |
 
 To modify the timeout, see [Client configuration](#client-configuration).
 
-
 ### Monitoring a TCP endpoint
+
 By prefixing `endpoints[].url` with `tcp:\\`, you can monitor TCP endpoints at a very basic level:
 
 ```yaml
@@ -1938,8 +1997,8 @@ This works for applications such as databases (Postgres, MySQL, etc.) and caches
 > something at the given address listening to the given port, and that a connection to that address was successfully
 > established.
 
-
 ### Monitoring a UDP endpoint
+
 By prefixing `endpoints[].url` with `udp:\\`, you can monitor UDP endpoints at a very basic level:
 
 ```yaml
@@ -1955,8 +2014,8 @@ Placeholders `[STATUS]` and `[BODY]` as well as the fields `endpoints[].body`, `
 
 This works for UDP based application.
 
-
 ### Monitoring a SCTP endpoint
+
 By prefixing `endpoints[].url` with `sctp:\\`, you can monitor Stream Control Transmission Protocol (SCTP) endpoints at a very basic level:
 
 ```yaml
@@ -1972,8 +2031,8 @@ Placeholders `[STATUS]` and `[BODY]` as well as the fields `endpoints[].body`, `
 
 This works for SCTP based application.
 
-
 ### Monitoring a WebSocket endpoint
+
 By prefixing `endpoints[].url` with `ws://` or `wss://`, you can monitor WebSocket endpoints at a very basic level:
 
 ```yaml
@@ -1989,8 +2048,8 @@ endpoints:
 The `[BODY]` placeholder contains the output of the query, and `[CONNECTED]`
 shows whether the connection was successfully established.
 
-
 ### Monitoring an endpoint using ICMP
+
 By prefixing `endpoints[].url` with `icmp:\\`, you can monitor endpoints at a very basic level using ICMP, or more
 commonly known as "ping" or "echo":
 
@@ -2008,9 +2067,10 @@ You can specify a domain prefixed by `icmp://`, or an IP address prefixed by `ic
 If you run Gatus on Linux, please read the Linux section on https://github.com/prometheus-community/pro-bing#linux
 if you encounter any problems.
 
-
 ### Monitoring an endpoint using DNS queries
+
 Defining a `dns` configuration in an endpoint will automatically mark said endpoint as an endpoint of type DNS:
+
 ```yaml
 endpoints:
   - name: example-dns-query
@@ -2024,13 +2084,15 @@ endpoints:
 ```
 
 There are two placeholders that can be used in the conditions for endpoints of type DNS:
+
 - The placeholder `[BODY]` resolves to the output of the query. For instance, a query of type `A` would return an IPv4.
 - The placeholder `[DNS_RCODE]` resolves to the name associated to the response code returned by the query, such as
-`NOERROR`, `FORMERR`, `SERVFAIL`, `NXDOMAIN`, etc.
-
+  `NOERROR`, `FORMERR`, `SERVFAIL`, `NXDOMAIN`, etc.
 
 ### Monitoring an endpoint using SSH
+
 You can monitor endpoints using SSH by prefixing `endpoints[].url` with `ssh:\\`:
+
 ```yaml
 endpoints:
   - name: ssh-example
@@ -2049,13 +2111,15 @@ endpoints:
 ```
 
 The following placeholders are supported for endpoints of type SSH:
+
 - `[CONNECTED]` resolves to `true` if the SSH connection was successful, `false` otherwise
 - `[STATUS]` resolves the exit code of the command executed on the remote server (e.g. `0` for success)
 
-
 ### Monitoring an endpoint using STARTTLS
+
 If you have an email server that you want to ensure there are no problems with, monitoring it through STARTTLS
 will serve as a good initial indicator:
+
 ```yaml
 endpoints:
   - name: starttls-smtp-example
@@ -2068,9 +2132,10 @@ endpoints:
       - "[CERTIFICATE_EXPIRATION] > 48h"
 ```
 
-
 ### Monitoring an endpoint using TLS
+
 Monitoring endpoints using SSL/TLS encryption, such as LDAP over TLS, can help detect certificate expiration:
+
 ```yaml
 endpoints:
   - name: tls-ldaps-example
@@ -2083,10 +2148,11 @@ endpoints:
       - "[CERTIFICATE_EXPIRATION] > 48h"
 ```
 
-
 ### Monitoring domain expiration
+
 You can monitor the expiration of a domain with all endpoint types except for DNS by using the `[DOMAIN_EXPIRATION]`
 placeholder:
+
 ```yaml
 endpoints:
   - name: check-domain-and-certificate-expiration
@@ -2102,21 +2168,22 @@ endpoints:
 > To prevent the WHOIS service from throttling your IP address if you send too many requests, Gatus will prevent you from
 > using the `[DOMAIN_EXPIRATION]` placeholder on an endpoint with an interval of less than `5m`.
 
-
 ### disable-monitoring-lock
+
 Setting `disable-monitoring-lock` to `true` means that multiple endpoints could be monitored at the same time.
 
 While this behavior wouldn't generally be harmful, conditions using the `[RESPONSE_TIME]` placeholder could be impacted
 by the evaluation of multiple endpoints at the same time, therefore, the default value for this parameter is `false`.
 
 There are three main reasons why you might want to disable the monitoring lock:
+
 - You're using Gatus for load testing (each endpoint are periodically evaluated on a different goroutine, so
-technically, if you create 100 endpoints with a 1 seconds interval, Gatus will send 100 requests per second)
+  technically, if you create 100 endpoints with a 1 seconds interval, Gatus will send 100 requests per second)
 - You have a _lot_ of endpoints to monitor
 - You want to test multiple endpoints at very short intervals (< 5s)
 
-
 ### Reloading configuration on the fly
+
 For the sake of convenience, Gatus automatically reloads the configuration on the fly if the loaded configuration file
 is updated while Gatus is running.
 
@@ -2127,9 +2194,11 @@ setting `skip-invalid-config-update` to `true`.
 Keep in mind that it is in your best interest to ensure the validity of the configuration file after each update you
 apply to the configuration file while Gatus is running by looking at the log and making sure that you do not see the
 following message:
+
 ```
 The configuration file was updated, but it is not valid. The old configuration will continue being used.
 ```
+
 Failure to do so may result in Gatus being unable to start if the application is restarted for whatever reason.
 
 I recommend not setting `skip-invalid-config-update` to `true` to avoid a situation like this, but the choice is yours
@@ -2140,8 +2209,8 @@ the same as restarting the application.
 
 > 📝 Updates may not be detected if the config file is bound instead of the config folder. See [#151](https://github.com/TwiN/gatus/issues/151).
 
-
 ### Endpoint groups
+
 Endpoint groups are used for grouping multiple endpoints together on the dashboard.
 
 ```yaml
@@ -2185,15 +2254,16 @@ The configuration above will result in a dashboard that looks like this:
 
 ![Gatus Endpoint Groups](.github/assets/endpoint-groups.png)
 
-
 ### Exposing Gatus on a custom path
+
 Currently, you can expose the Gatus UI using a fully qualified domain name (FQDN) such as `status.example.org`. However, it does not support path-based routing, which means you cannot expose it through a URL like `example.org/status/`.
 
 For more information, see https://github.com/TwiN/gatus/issues/88.
 
-
 ### Exposing Gatus on a custom port
+
 By default, Gatus is exposed on port `8080`, but you may specify a different port by setting the `web.port` parameter:
+
 ```yaml
 web:
   port: 8081
@@ -2201,17 +2271,18 @@ web:
 
 If you're using a PaaS like Heroku that doesn't let you set a custom port and exposes it through an environment
 variable instead, you can use that environment variable directly in the configuration file:
+
 ```yaml
 web:
   port: ${PORT}
 ```
 
-
 ### Configuring a startup delay
+
 If, for any reason, you need Gatus to wait for a given amount of time before monitoring the endpoints on application start, you can use the `GATUS_DELAY_START_SECONDS` environment variable to make Gatus sleep on startup.
 
-
 ### Keeping your configuration small
+
 While not specific to Gatus, you can leverage YAML anchors to create a default configuration.
 If you have a large configuration file, this should help you keep things clean.
 
@@ -2230,25 +2301,26 @@ default-endpoint: &defaults
 
 endpoints:
   - name: anchor-example-1
-    <<: *defaults               # This will merge the configuration under &defaults with this endpoint
+    <<: *defaults # This will merge the configuration under &defaults with this endpoint
     url: "https://example.org"
 
   - name: anchor-example-2
     <<: *defaults
-    group: example              # This will override the group defined in &defaults
+    group: example # This will override the group defined in &defaults
     url: "https://example.com"
 
   - name: anchor-example-3
     <<: *defaults
     url: "https://twin.sh/health"
-    conditions:                # This will override the conditions defined in &defaults
+    conditions: # This will override the conditions defined in &defaults
       - "[STATUS] == 200"
       - "[BODY].status == UP"
 ```
+
 </details>
 
-
 ### Proxy client configuration
+
 You can configure a proxy for the client to use by setting the `proxy-url` parameter in the client configuration.
 
 ```yaml
@@ -2261,20 +2333,22 @@ endpoints:
       - "[STATUS] == 200"
 ```
 
-
 ### How to fix 431 Request Header Fields Too Large error
+
 Depending on where your environment is deployed and what kind of middleware or reverse proxy sits in front of Gatus,
 you may run into this issue. This could be because the request headers are too large, e.g. big cookies.
 
 By default, `web.read-buffer-size` is set to `8192`, but increasing this value like so will increase the read buffer size:
+
 ```yaml
 web:
   read-buffer-size: 32768
 ```
 
-
 ### Badges
+
 #### Uptime
+
 ![Uptime 1h](https://status.twin.sh/api/v1/endpoints/core_blog-external/uptimes/1h/badge.svg)
 ![Uptime 24h](https://status.twin.sh/api/v1/endpoints/core_blog-external/uptimes/24h/badge.svg)
 ![Uptime 7d](https://status.twin.sh/api/v1/endpoints/core_blog-external/uptimes/7d/badge.svg)
@@ -2284,80 +2358,100 @@ This allows you to put badges in your individual applications' README or even cr
 desire.
 
 The path to generate a badge is the following:
+
 ```
 /api/v1/endpoints/{key}/uptimes/{duration}/badge.svg
 ```
+
 Where:
+
 - `{duration}` is `30d` (alpha), `7d`, `24h` or `1h`
 - `{key}` has the pattern `<GROUP_NAME>_<ENDPOINT_NAME>` in which both variables have ` `, `/`, `_`, `,` and `.` replaced by `-`.
 
 For instance, if you want the uptime during the last 24 hours from the endpoint `frontend` in the group `core`,
 the URL would look like this:
+
 ```
 https://example.com/api/v1/endpoints/core_frontend/uptimes/7d/badge.svg
 ```
+
 If you want to display an endpoint that is not part of a group, you must leave the group value empty:
+
 ```
 https://example.com/api/v1/endpoints/_frontend/uptimes/7d/badge.svg
 ```
+
 Example:
+
 ```
 ![Uptime 24h](https://status.twin.sh/api/v1/endpoints/core_blog-external/uptimes/24h/badge.svg)
 ```
+
 If you'd like to see a visual example of each badge available, you can simply navigate to the endpoint's detail page.
 
-
 #### Health
+
 ![Health](https://status.twin.sh/api/v1/endpoints/core_blog-external/health/badge.svg)
 
 The path to generate a badge is the following:
+
 ```
 /api/v1/endpoints/{key}/health/badge.svg
 ```
+
 Where:
+
 - `{key}` has the pattern `<GROUP_NAME>_<ENDPOINT_NAME>` in which both variables have ` `, `/`, `_`, `,` and `.` replaced by `-`.
 
 For instance, if you want the current status of the endpoint `frontend` in the group `core`,
 the URL would look like this:
+
 ```
 https://example.com/api/v1/endpoints/core_frontend/health/badge.svg
 ```
 
-
 #### Health (Shields.io)
+
 ![Health](https://img.shields.io/endpoint?url=https%3A%2F%2Fstatus.twin.sh%2Fapi%2Fv1%2Fendpoints%2Fcore_blog-external%2Fhealth%2Fbadge.shields)
 
 The path to generate a badge is the following:
+
 ```
 /api/v1/endpoints/{key}/health/badge.shields
 ```
+
 Where:
+
 - `{key}` has the pattern `<GROUP_NAME>_<ENDPOINT_NAME>` in which both variables have ` `, `/`, `_`, `,` and `.` replaced by `-`.
 
 For instance, if you want the current status of the endpoint `frontend` in the group `core`,
 the URL would look like this:
+
 ```
 https://example.com/api/v1/endpoints/core_frontend/health/badge.shields
 ```
 
 See more information about the Shields.io badge endpoint [here](https://shields.io/badges/endpoint-badge).
 
-
 #### Response time
+
 ![Response time 1h](https://status.twin.sh/api/v1/endpoints/core_blog-external/response-times/1h/badge.svg)
 ![Response time 24h](https://status.twin.sh/api/v1/endpoints/core_blog-external/response-times/24h/badge.svg)
 ![Response time 7d](https://status.twin.sh/api/v1/endpoints/core_blog-external/response-times/7d/badge.svg)
 
 The endpoint to generate a badge is the following:
+
 ```
 /api/v1/endpoints/{key}/response-times/{duration}/badge.svg
 ```
+
 Where:
+
 - `{duration}` is `30d` (alpha), `7d`, `24h` or `1h`
 - `{key}` has the pattern `<GROUP_NAME>_<ENDPOINT_NAME>` in which both variables have ` `, `/`, `_`, `,` and `.` replaced by `-`.
 
-
 ##### How to change the color thresholds of the response time badge
+
 To change the response time badges' threshold, a corresponding configuration can be added to an endpoint.
 The values in the array correspond to the levels [Awesome, Great, Good, Passable, Bad]
 All five values must be given in milliseconds (ms).
@@ -2376,20 +2470,24 @@ endpoints:
         thresholds: [550, 850, 1350, 1650, 1750]
 ```
 
-
 ### API
+
 Gatus provides a simple read-only API that can be queried in order to programmatically determine endpoint status and history.
 
 All endpoints are available via a GET request to the following endpoint:
+
 ```
 /api/v1/endpoints/statuses
-````
+```
+
 Example: https://status.twin.sh/api/v1/endpoints/statuses
 
 Specific endpoints can also be queried by using the following pattern:
+
 ```
 /api/v1/endpoints/{group}_{endpoint}/statuses
 ```
+
 Example: https://status.twin.sh/api/v1/endpoints/core_blog-home/statuses
 
 Gzip compression will be used if the `Accept-Encoding` HTTP header contains `gzip`.
@@ -2397,13 +2495,14 @@ Gzip compression will be used if the `Accept-Encoding` HTTP header contains `gzi
 The API will return a JSON payload with the `Content-Type` response header set to `application/json`.
 No such header is required to query the API.
 
-
 ### Installing as binary
+
 You can download Gatus as a binary using the following command:
+
 ```
 go install github.com/TwiN/gatus/v5@latest
 ```
 
-
 ### High level design overview
+
 ![Gatus diagram](.github/assets/gatus-diagram.jpg)

@@ -1,197 +1,233 @@
 endpoints:
   - name: 0.1 native on Base -> native on Mainnet
-    group: lifi
+    group: lifi_bridge
     url: >-
       https://li.quest/v1/quote?fromChain=8453&toChain=1&fromToken=0x0000000000000000000000000000000000000000&toToken=0x0000000000000000000000000000000000000000&fromAmount=10000000000000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder&denyExchanges=1inch
     interval: 5m
     conditions:
-      - "[STATUS] == 200"
-      - "[BODY].status == UP"
-      - "[RESPONSE_TIME] < 150"
+      - '[STATUS] == 200'
+      - '[BODY].status == UP'
+      - '[RESPONSE_TIME] < 2000'
   - name: 0.1 native on Base -> native on Arbitrum
-    group: lifi
+    group: lifi_bridge
     url: >-
       https://li.quest/v1/quote?fromChain=8453&toChain=42161&fromToken=0x0000000000000000000000000000000000000000&toToken=0x0000000000000000000000000000000000000000&fromAmount=10000000000000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder&denyExchanges=1inch
     interval: 5m
     conditions:
-      - "[STATUS] == 200"
-      - "[BODY].status == UP"
-      - "[RESPONSE_TIME] < 150"
+      - '[STATUS] == 200'
+      - '[BODY].status == UP'
+      - '[RESPONSE_TIME] < 2000'
   - name: 0.1 native on Base -> native on BNB
-    group: lifi
+    group: lifi_bridge
     url: >-
       https://li.quest/v1/quote?fromChain=8453&toChain=56&fromToken=0x0000000000000000000000000000000000000000&toToken=0x0000000000000000000000000000000000000000&fromAmount=10000000000000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder&denyExchanges=1inch
     interval: 5m
     conditions:
-      - "[STATUS] == 200"
-      - "[BODY].status == UP"
-      - "[RESPONSE_TIME] < 150"
+      - '[STATUS] == 200'
+      - '[BODY].status == UP'
+      - '[RESPONSE_TIME] < 2000'
   - name: 0.1 native on Base -> native on Polygon
-    group: lifi
+    group: lifi_bridge
     url: >-
       https://li.quest/v1/quote?fromChain=8453&toChain=137&fromToken=0x0000000000000000000000000000000000000000&toToken=0x0000000000000000000000000000000000000000&fromAmount=10000000000000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder&denyExchanges=1inch
     interval: 5m
     conditions:
-      - "[STATUS] == 200"
-      - "[BODY].status == UP"
-      - "[RESPONSE_TIME] < 150"
+      - '[STATUS] == 200'
+      - '[BODY].status == UP'
+      - '[RESPONSE_TIME] < 2000'
   - name: 0.1 native on Mainnet -> native on Base
-    group: lifi
+    group: lifi_bridge
     url: >-
       https://li.quest/v1/quote?fromChain=1&toChain=8453&fromToken=0x0000000000000000000000000000000000000000&toToken=0x0000000000000000000000000000000000000000&fromAmount=10000000000000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder&denyExchanges=1inch
     interval: 5m
     conditions:
-      - "[STATUS] == 200"
-      - "[BODY].status == UP"
-      - "[RESPONSE_TIME] < 150"
+      - '[STATUS] == 200'
+      - '[BODY].status == UP'
+      - '[RESPONSE_TIME] < 2000'
   - name: 0.1 native on Mainnet -> native on Arbitrum
-    group: lifi
+    group: lifi_bridge
     url: >-
       https://li.quest/v1/quote?fromChain=1&toChain=42161&fromToken=0x0000000000000000000000000000000000000000&toToken=0x0000000000000000000000000000000000000000&fromAmount=10000000000000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder&denyExchanges=1inch
     interval: 5m
     conditions:
-      - "[STATUS] == 200"
-      - "[BODY].status == UP"
-      - "[RESPONSE_TIME] < 150"
+      - '[STATUS] == 200'
+      - '[BODY].status == UP'
+      - '[RESPONSE_TIME] < 2000'
   - name: 0.1 native on Mainnet -> native on BNB
-    group: lifi
+    group: lifi_bridge
     url: >-
       https://li.quest/v1/quote?fromChain=1&toChain=56&fromToken=0x0000000000000000000000000000000000000000&toToken=0x0000000000000000000000000000000000000000&fromAmount=10000000000000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder&denyExchanges=1inch
     interval: 5m
     conditions:
-      - "[STATUS] == 200"
-      - "[BODY].status == UP"
-      - "[RESPONSE_TIME] < 150"
+      - '[STATUS] == 200'
+      - '[BODY].status == UP'
+      - '[RESPONSE_TIME] < 2000'
   - name: 0.1 native on Mainnet -> native on Polygon
-    group: lifi
+    group: lifi_bridge
     url: >-
       https://li.quest/v1/quote?fromChain=1&toChain=137&fromToken=0x0000000000000000000000000000000000000000&toToken=0x0000000000000000000000000000000000000000&fromAmount=10000000000000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder&denyExchanges=1inch
     interval: 5m
     conditions:
-      - "[STATUS] == 200"
-      - "[BODY].status == UP"
-      - "[RESPONSE_TIME] < 150"
+      - '[STATUS] == 200'
+      - '[BODY].status == UP'
+      - '[RESPONSE_TIME] < 2000'
   - name: 0.1 native on Arbitrum -> native on Base
-    group: lifi
+    group: lifi_bridge
     url: >-
       https://li.quest/v1/quote?fromChain=42161&toChain=8453&fromToken=0x0000000000000000000000000000000000000000&toToken=0x0000000000000000000000000000000000000000&fromAmount=10000000000000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder&denyExchanges=1inch
     interval: 5m
     conditions:
-      - "[STATUS] == 200"
-      - "[BODY].status == UP"
-      - "[RESPONSE_TIME] < 150"
+      - '[STATUS] == 200'
+      - '[BODY].status == UP'
+      - '[RESPONSE_TIME] < 2000'
   - name: 0.1 native on Arbitrum -> native on Mainnet
-    group: lifi
+    group: lifi_bridge
     url: >-
       https://li.quest/v1/quote?fromChain=42161&toChain=1&fromToken=0x0000000000000000000000000000000000000000&toToken=0x0000000000000000000000000000000000000000&fromAmount=10000000000000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder&denyExchanges=1inch
     interval: 5m
     conditions:
-      - "[STATUS] == 200"
-      - "[BODY].status == UP"
-      - "[RESPONSE_TIME] < 150"
+      - '[STATUS] == 200'
+      - '[BODY].status == UP'
+      - '[RESPONSE_TIME] < 2000'
   - name: 0.1 native on Arbitrum -> native on BNB
-    group: lifi
+    group: lifi_bridge
     url: >-
       https://li.quest/v1/quote?fromChain=42161&toChain=56&fromToken=0x0000000000000000000000000000000000000000&toToken=0x0000000000000000000000000000000000000000&fromAmount=10000000000000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder&denyExchanges=1inch
     interval: 5m
     conditions:
-      - "[STATUS] == 200"
-      - "[BODY].status == UP"
-      - "[RESPONSE_TIME] < 150"
+      - '[STATUS] == 200'
+      - '[BODY].status == UP'
+      - '[RESPONSE_TIME] < 2000'
   - name: 0.1 native on Arbitrum -> native on Polygon
-    group: lifi
+    group: lifi_bridge
     url: >-
       https://li.quest/v1/quote?fromChain=42161&toChain=137&fromToken=0x0000000000000000000000000000000000000000&toToken=0x0000000000000000000000000000000000000000&fromAmount=10000000000000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder&denyExchanges=1inch
     interval: 5m
     conditions:
-      - "[STATUS] == 200"
-      - "[BODY].status == UP"
-      - "[RESPONSE_TIME] < 150"
+      - '[STATUS] == 200'
+      - '[BODY].status == UP'
+      - '[RESPONSE_TIME] < 2000'
   - name: 0.1 native on BNB -> native on Base
-    group: lifi
+    group: lifi_bridge
     url: >-
       https://li.quest/v1/quote?fromChain=56&toChain=8453&fromToken=0x0000000000000000000000000000000000000000&toToken=0x0000000000000000000000000000000000000000&fromAmount=10000000000000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder&denyExchanges=1inch
     interval: 5m
     conditions:
-      - "[STATUS] == 200"
-      - "[BODY].status == UP"
-      - "[RESPONSE_TIME] < 150"
+      - '[STATUS] == 200'
+      - '[BODY].status == UP'
+      - '[RESPONSE_TIME] < 2000'
   - name: 0.1 native on BNB -> native on Mainnet
-    group: lifi
+    group: lifi_bridge
     url: >-
       https://li.quest/v1/quote?fromChain=56&toChain=1&fromToken=0x0000000000000000000000000000000000000000&toToken=0x0000000000000000000000000000000000000000&fromAmount=10000000000000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder&denyExchanges=1inch
     interval: 5m
     conditions:
-      - "[STATUS] == 200"
-      - "[BODY].status == UP"
-      - "[RESPONSE_TIME] < 150"
+      - '[STATUS] == 200'
+      - '[BODY].status == UP'
+      - '[RESPONSE_TIME] < 2000'
   - name: 0.1 native on BNB -> native on Arbitrum
-    group: lifi
+    group: lifi_bridge
     url: >-
       https://li.quest/v1/quote?fromChain=56&toChain=42161&fromToken=0x0000000000000000000000000000000000000000&toToken=0x0000000000000000000000000000000000000000&fromAmount=10000000000000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder&denyExchanges=1inch
     interval: 5m
     conditions:
-      - "[STATUS] == 200"
-      - "[BODY].status == UP"
-      - "[RESPONSE_TIME] < 150"
+      - '[STATUS] == 200'
+      - '[BODY].status == UP'
+      - '[RESPONSE_TIME] < 2000'
   - name: 0.1 native on BNB -> native on Polygon
-    group: lifi
+    group: lifi_bridge
     url: >-
       https://li.quest/v1/quote?fromChain=56&toChain=137&fromToken=0x0000000000000000000000000000000000000000&toToken=0x0000000000000000000000000000000000000000&fromAmount=10000000000000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder&denyExchanges=1inch
     interval: 5m
     conditions:
-      - "[STATUS] == 200"
-      - "[BODY].status == UP"
-      - "[RESPONSE_TIME] < 150"
+      - '[STATUS] == 200'
+      - '[BODY].status == UP'
+      - '[RESPONSE_TIME] < 2000'
   - name: 0.1 native on Polygon -> native on Base
-    group: lifi
+    group: lifi_bridge
     url: >-
       https://li.quest/v1/quote?fromChain=137&toChain=8453&fromToken=0x0000000000000000000000000000000000000000&toToken=0x0000000000000000000000000000000000000000&fromAmount=10000000000000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder&denyExchanges=1inch
     interval: 5m
     conditions:
-      - "[STATUS] == 200"
-      - "[BODY].status == UP"
-      - "[RESPONSE_TIME] < 150"
+      - '[STATUS] == 200'
+      - '[BODY].status == UP'
+      - '[RESPONSE_TIME] < 2000'
   - name: 0.1 native on Polygon -> native on Mainnet
-    group: lifi
+    group: lifi_bridge
     url: >-
       https://li.quest/v1/quote?fromChain=137&toChain=1&fromToken=0x0000000000000000000000000000000000000000&toToken=0x0000000000000000000000000000000000000000&fromAmount=10000000000000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder&denyExchanges=1inch
     interval: 5m
     conditions:
-      - "[STATUS] == 200"
-      - "[BODY].status == UP"
-      - "[RESPONSE_TIME] < 150"
+      - '[STATUS] == 200'
+      - '[BODY].status == UP'
+      - '[RESPONSE_TIME] < 2000'
   - name: 0.1 native on Polygon -> native on Arbitrum
-    group: lifi
+    group: lifi_bridge
     url: >-
       https://li.quest/v1/quote?fromChain=137&toChain=42161&fromToken=0x0000000000000000000000000000000000000000&toToken=0x0000000000000000000000000000000000000000&fromAmount=10000000000000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder&denyExchanges=1inch
     interval: 5m
     conditions:
-      - "[STATUS] == 200"
-      - "[BODY].status == UP"
-      - "[RESPONSE_TIME] < 150"
+      - '[STATUS] == 200'
+      - '[BODY].status == UP'
+      - '[RESPONSE_TIME] < 2000'
   - name: 0.1 native on Polygon -> native on BNB
-    group: lifi
+    group: lifi_bridge
     url: >-
       https://li.quest/v1/quote?fromChain=137&toChain=56&fromToken=0x0000000000000000000000000000000000000000&toToken=0x0000000000000000000000000000000000000000&fromAmount=10000000000000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder&denyExchanges=1inch
     interval: 5m
     conditions:
-      - "[STATUS] == 200"
-      - "[BODY].status == UP"
-      - "[RESPONSE_TIME] < 150"
+      - '[STATUS] == 200'
+      - '[BODY].status == UP'
+      - '[RESPONSE_TIME] < 2000'
+  - name: 5 USDC same-chain swap on Base
+    group: lifi_swap
+    url: >-
+      https://li.quest/v1/quote?fromChain=8453&toChain=8453&fromToken=0x3c499c542cef5e3811e1192ce70d8cc03d5c3359&toToken=0x3c499c542cef5e3811e1192ce70d8cc03d5c3359&fromAmount=5000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder
+    interval: 5m
+    conditions:
+      - '[STATUS] == 200'
+      - '[BODY].status == UP'
+      - '[RESPONSE_TIME] < 2000'
+  - name: 5 USDC same-chain swap on Mainnet
+    group: lifi_swap
+    url: >-
+      https://li.quest/v1/quote?fromChain=1&toChain=1&fromToken=0x3c499c542cef5e3811e1192ce70d8cc03d5c3359&toToken=0x3c499c542cef5e3811e1192ce70d8cc03d5c3359&fromAmount=5000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder
+    interval: 5m
+    conditions:
+      - '[STATUS] == 200'
+      - '[BODY].status == UP'
+      - '[RESPONSE_TIME] < 2000'
+  - name: 5 USDC same-chain swap on Arbitrum
+    group: lifi_swap
+    url: >-
+      https://li.quest/v1/quote?fromChain=42161&toChain=42161&fromToken=0x3c499c542cef5e3811e1192ce70d8cc03d5c3359&toToken=0x3c499c542cef5e3811e1192ce70d8cc03d5c3359&fromAmount=5000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder
+    interval: 5m
+    conditions:
+      - '[STATUS] == 200'
+      - '[BODY].status == UP'
+      - '[RESPONSE_TIME] < 2000'
+  - name: 5 USDC same-chain swap on BNB
+    group: lifi_swap
+    url: >-
+      https://li.quest/v1/quote?fromChain=56&toChain=56&fromToken=0x3c499c542cef5e3811e1192ce70d8cc03d5c3359&toToken=0x3c499c542cef5e3811e1192ce70d8cc03d5c3359&fromAmount=5000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder
+    interval: 5m
+    conditions:
+      - '[STATUS] == 200'
+      - '[BODY].status == UP'
+      - '[RESPONSE_TIME] < 2000'
   - name: 5 USDC same-chain swap on Polygon
-    group: usdc
+    group: lifi_swap
     url: >-
       https://li.quest/v1/quote?fromChain=137&toChain=137&fromToken=0x3c499c542cef5e3811e1192ce70d8cc03d5c3359&toToken=0x3c499c542cef5e3811e1192ce70d8cc03d5c3359&fromAmount=5000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder
     interval: 5m
     conditions:
-      - "[STATUS] == 200"
-      - "[BODY].status == UP"
-      - "[RESPONSE_TIME] < 150"
-  - name: Example API Health Check
+      - '[STATUS] == 200'
+      - '[BODY].status == UP'
+      - '[RESPONSE_TIME] < 2000'
+  - name: Wayfinder Login
     group: api-health
-    url: https://api.example.com/health
+    url: https://dev.wayfinder.ai
     interval: 5m
     conditions:
-      - "[STATUS] == 200"
-      - "[RESPONSE_TIME] < 150"
+      - '[STATUS] == 200'
+      - '[RESPONSE_TIME] < 50'
