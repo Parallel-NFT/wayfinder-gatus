@@ -40,8 +40,8 @@ steps:
             --image ${_ARTIFACT_REPOSITORY_URL} \
             --region ${_REGION} \
             --platform managed \
-            --cpu 1 \
-            --memory=1Gi \
+            --cpu .5 \
+            --memory=500M \
             --allow-unauthenticated \
             --service-account "${_SERVICE_ACCOUNT_ID}@${PROJECT_ID}.iam.gserviceaccount.com"
         gcloud run services update-traffic ${_CLOUD_RUN_NAME} --to-latest --region us-central1
