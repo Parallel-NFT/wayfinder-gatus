@@ -1,0 +1,59 @@
+steps:
+  - id: pull-image
+    entrypoint: "bash"
+    name: "gcr.io/cloud-builders/docker"
+    args:
+      - "-c"
+      - docker pull ${_ARTIFACT_REPOSITORY_URL} || exit 0
+  - id: build-image
+    waitFor: ["pull-image"]
+    name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "buildx",
+        "build",
+        "--progress=plain",
+        "--build-arg",
+        "BUILDKIT_INLINE_CACHE=1",
+        "--build-arg",
+        "ENV=${_ENV}",
+        "--platform",
+        "linux/amd64",
+        "-t",
+        "${_ARTIFACT_REPOSITORY_URL}",
+        "--cache-from",
+        "${_ARTIFACT_REPOSITORY_URL}",
+        ".",
+      ]
+  - id: push-image
+    waitFor: ["build-image"]
+    name: "gcr.io/cloud-builders/docker"
+    args: ["push", "${_ARTIFACT_REPOSITORY_URL}"]
+  - id: cloudrun-deploy
+    waitFor: ["push-image"]
+    name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        gcloud beta run deploy ${_CLOUD_RUN_NAME} \
+            --image ${_ARTIFACT_REPOSITORY_URL} \
+            --region ${_REGION} \
+            --platform managed \
+            --cpu 4 \
+            --memory=4Gi \
+            --allow-unauthenticated \
+            --service-account "${_SERVICE_ACCOUNT_ID}@${PROJECT_ID}.iam.gserviceaccount.com"
+        gcloud run services update-traffic ${_CLOUD_RUN_NAME} --to-latest --region us-central1
+substitutions:
+  _ARTIFACT_REPOSITORY_URL: us-central1-docker.pkg.dev/wai-bot/cloud-run-source-deploy/${_IMAGE_NAME}/${_ENV}-${_IMAGE_NAME}:latest
+  _ENV: dev
+  _CLOUD_RUN_NAME: ${_ENV}-${_IMAGE_NAME}
+  _IMAGE_VERSION: latest
+  _IMAGE_NAME: wayfinder-gatus
+  _SERVICE_ACCOUNT_ID: deployer
+  _REGION: us-central1
+options:
+  dynamic_substitutions: true
+  machineType: E2_HIGHCPU_32
+  logging: CLOUD_LOGGING_ONLY
