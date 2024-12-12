@@ -57,7 +57,7 @@ const config = {
     // in ms
     lifi_bridge: 7500,
     lifi_swap: 7500,
-    http: 1000,
+    http: 5000,
     debridge: 7500,
     odos_swap: 7500,
   },
