@@ -55,11 +55,11 @@ const config = {
   },
   responseTimes: {
     // in ms
-    lifi_bridge: 7500,
-    lifi_swap: 7500,
+    lifi_bridge: 10000,
+    lifi_swap: 10000,
     http: 5000,
-    debridge: 7500,
-    odos_swap: 7500,
+    debridge: 10000,
+    odos_swap: 10000,
   },
   lifi_swap: {
     amount: "5",
@@ -242,6 +242,32 @@ const generateDebridgeChecks = () => {
         dstChainTokenOutRecipient: EVM_ADDRESS_2,
         srcChainOrderAuthorityAddress: EVM_ADDRESS_1,
         dstChainOrderAuthorityAddress: EVM_ADDRESS_2,
+        prependOperatingExpenses: "false",
+      }),
+      interval: config.intervals.debridge,
+      conditions: [
+        "[STATUS] == any(200)",
+        "[BODY] == pat(*tx*)",
+        `[RESPONSE_TIME] < ${config.responseTimes.debridge}`,
+      ],
+    });
+
+    checks.push({
+      name: `[DeBridge] (${Number(readable) * 2} ${symbol} on ${
+        fromChain.name
+      }) -> (native on ${toChain.name})`,
+      group: "debridge",
+      url: buildUrl("https://dln.debridge.finance/v1.0/dln/order/create-tx", {
+        srcChainId: fromChain.id,
+        srcChainTokenIn: "0x0000000000000000000000000000000000000000",
+        srcChainTokenInAmount: (BigInt(amount) * 2n).toString(),
+        dstChainId: toChain.id,
+        dstChainTokenOut: "0x0000000000000000000000000000000000000000",
+        dstChainTokenOutAmount: "auto",
+        dstChainTokenOutRecipient: EVM_ADDRESS_2,
+        srcChainOrderAuthorityAddress: EVM_ADDRESS_1,
+        dstChainOrderAuthorityAddress: EVM_ADDRESS_2,
+        prependOperatingExpenses: "false",
       }),
       interval: config.intervals.debridge,
       conditions: [
@@ -275,20 +301,36 @@ const generateDebridgeChecks = () => {
     });
 
     // Generate SOL to ETH native checks
-    let amountSol = "100000000";
-    let readableSol = 0.1;
-    // mainnet expensive
-    if (toChain.id === "1") {
-      amountSol = "200000000";
-      readableSol = 0.2;
-    }
     checks.push({
-      name: `[DeBridge] (${readableSol} SOL on Solana) -> (ETH on ${toChain.name})`,
+      name: `[DeBridge] (0.1 SOL on Solana) -> (ETH on ${toChain.name})`,
       group: "debridge",
       url: buildUrl("https://dln.debridge.finance/v1.0/dln/order/create-tx", {
         srcChainId: solanaDeBridge.id,
         srcChainTokenIn: tokens.solana_tokens.native,
-        srcChainTokenInAmount: amountSol,
+        srcChainTokenInAmount: "100000000",
+        dstChainId: toChain.id,
+        dstChainTokenOut: "0x0000000000000000000000000000000000000000",
+        dstChainTokenOutAmount: "auto",
+        dstChainTokenOutRecipient: EVM_ADDRESS_2,
+        srcChainOrderAuthorityAddress: SVM_ADDRESS_1,
+        dstChainOrderAuthorityAddress: EVM_ADDRESS_2,
+      }),
+      interval: config.intervals.debridge,
+      conditions: [
+        "[STATUS] == any(200)",
+        "[BODY] == pat(*tx*)",
+        `[RESPONSE_TIME] < ${config.responseTimes.debridge}`,
+      ],
+    });
+
+    // Generate SOL to ETH native checks
+    checks.push({
+      name: `[DeBridge] (0.3 SOL on Solana) -> (ETH on ${toChain.name})`,
+      group: "debridge",
+      url: buildUrl("https://dln.debridge.finance/v1.0/dln/order/create-tx", {
+        srcChainId: solanaDeBridge.id,
+        srcChainTokenIn: tokens.solana_tokens.native,
+        srcChainTokenInAmount: "300000000",
         dstChainId: toChain.id,
         dstChainTokenOut: "0x0000000000000000000000000000000000000000",
         dstChainTokenOutAmount: "auto",
