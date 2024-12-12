@@ -5,6 +5,12 @@ Private Gatus instance for health checking dashboard. Used for downstream and se
 `config.yaml` - Gatus config, GENERATED.
 `generate-config.js` - Go nuts, then `node generate-config.js`
 
+Test localy:
+
+```
+node generate-config.js; docker build . -t test; docker run -p 80:8080 test
+```
+
 ---
 
 [![Gatus](.github/assets/logo-with-dark-text.png)](https://gatus.io)

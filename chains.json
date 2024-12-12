@@ -1,0 +1,13 @@
+{
+  "evm": {
+    "Base": { "id": "8453" },
+    "Ethereum": { "id": "1" },
+    "Arbitrum": { "id": "42161" },
+    "BSC": { "id": "56" },
+    "Polygon": { "id": "137" }
+  },
+  "svm": {
+    "Solana_LiFi": { "id": "1151111081099710" },
+    "Solana_DeBridge": { "id": "7565164" }
+  }
+}
