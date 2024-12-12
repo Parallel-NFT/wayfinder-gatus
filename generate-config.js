@@ -54,7 +54,6 @@ function generateLifiBridgeChecks() {
               interval: config.global.interval,
               conditions: [
                 "[STATUS] == 200",
-                "[BODY].status == UP",
                 `[RESPONSE_TIME] < ${config.global.responseTimes.lifi_bridge}`,
               ],
             },
@@ -75,7 +74,6 @@ function generateLifiSwapChecks() {
               interval: config.global.interval,
               conditions: [
                 "[STATUS] == 200",
-                "[BODY].status == UP",
                 `[RESPONSE_TIME] < ${config.global.responseTimes.lifi_swap}`,
               ],
             },
