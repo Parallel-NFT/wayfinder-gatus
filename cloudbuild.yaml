@@ -40,18 +40,17 @@ steps:
             --image ${_ARTIFACT_REPOSITORY_URL} \
             --region ${_REGION} \
             --platform managed \
-            --cpu 4 \
-            --memory=4Gi \
+            --cpu 1 \
+            --memory=1Gi \
             --allow-unauthenticated \
             --service-account "${_SERVICE_ACCOUNT_ID}@${PROJECT_ID}.iam.gserviceaccount.com"
         gcloud run services update-traffic ${_CLOUD_RUN_NAME} --to-latest --region us-central1
 substitutions:
-  _ARTIFACT_REPOSITORY_URL: us-central1-docker.pkg.dev/wai-bot/cloud-run-source-deploy/${_IMAGE_NAME}/${_ENV}-${_IMAGE_NAME}:latest
   _ENV: dev
-  _CLOUD_RUN_NAME: ${_ENV}-${_IMAGE_NAME}
   _IMAGE_VERSION: latest
   _IMAGE_NAME: wayfinder-gatus
-  _SERVICE_ACCOUNT_ID: deployer
+  _CLOUD_RUN_NAME: ${_ENV}-${_IMAGE_NAME}
+  _SERVICE_ACCOUNT_ID: ${_ENV}-wayfinder-deployer
   _REGION: us-central1
 options:
   dynamic_substitutions: true
