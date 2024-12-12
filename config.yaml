@@ -1,53 +1,116 @@
 endpoints:
-  - name: front-end
-    group: core
-    url: "https://twin.sh/health"
+  - name: 0.1 native on Base -> X native on Mainnet
+    group: lifi
+    url: >-
+      https://li.quest/v1/quote?fromChain=8453&toChain=1&fromToken=0x0000000000000000000000000000000000000000&toToken=0x0000000000000000000000000000000000000000&fromAmount=10000000000000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder&denyExchanges=1inch
     interval: 5m
     conditions:
       - "[STATUS] == 200"
       - "[BODY].status == UP"
       - "[RESPONSE_TIME] < 150"
-
-  - name: back-end
-    group: core
-    url: "https://example.org/"
+  - name: 0.1 native on Base -> X native on Arbitrum
+    group: lifi
+    url: >-
+      https://li.quest/v1/quote?fromChain=8453&toChain=42161&fromToken=0x0000000000000000000000000000000000000000&toToken=0x0000000000000000000000000000000000000000&fromAmount=10000000000000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder&denyExchanges=1inch
     interval: 5m
     conditions:
       - "[STATUS] == 200"
-      - "[CERTIFICATE_EXPIRATION] > 48h"
-
-  - name: monitoring
-    group: internal
-    url: "https://example.org/"
+      - "[BODY].status == UP"
+      - "[RESPONSE_TIME] < 150"
+  - name: 0.1 native on Base -> X native on BNB
+    group: lifi
+    url: >-
+      https://li.quest/v1/quote?fromChain=8453&toChain=56&fromToken=0x0000000000000000000000000000000000000000&toToken=0x0000000000000000000000000000000000000000&fromAmount=10000000000000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder&denyExchanges=1inch
     interval: 5m
     conditions:
       - "[STATUS] == 200"
-
-  - name: nas
-    group: internal
-    url: "https://example.org/"
+      - "[BODY].status == UP"
+      - "[RESPONSE_TIME] < 150"
+  - name: 0.1 native on Mainnet -> X native on Base
+    group: lifi
+    url: >-
+      https://li.quest/v1/quote?fromChain=1&toChain=8453&fromToken=0x0000000000000000000000000000000000000000&toToken=0x0000000000000000000000000000000000000000&fromAmount=10000000000000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder&denyExchanges=1inch
     interval: 5m
     conditions:
       - "[STATUS] == 200"
-
-  - name: example-dns-query
-    url: "8.8.8.8" # Address of the DNS server to use
+      - "[BODY].status == UP"
+      - "[RESPONSE_TIME] < 150"
+  - name: 0.1 native on Mainnet -> X native on Arbitrum
+    group: lifi
+    url: >-
+      https://li.quest/v1/quote?fromChain=1&toChain=42161&fromToken=0x0000000000000000000000000000000000000000&toToken=0x0000000000000000000000000000000000000000&fromAmount=10000000000000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder&denyExchanges=1inch
     interval: 5m
-    dns:
-      query-name: "example.com"
-      query-type: "A"
     conditions:
-      - "[BODY] == 93.184.215.14"
-      - "[DNS_RCODE] == NOERROR"
-
-  - name: icmp-ping
-    url: "icmp://example.org"
-    interval: 1m
+      - "[STATUS] == 200"
+      - "[BODY].status == UP"
+      - "[RESPONSE_TIME] < 150"
+  - name: 0.1 native on Mainnet -> X native on BNB
+    group: lifi
+    url: >-
+      https://li.quest/v1/quote?fromChain=1&toChain=56&fromToken=0x0000000000000000000000000000000000000000&toToken=0x0000000000000000000000000000000000000000&fromAmount=10000000000000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder&denyExchanges=1inch
+    interval: 5m
     conditions:
-      - "[CONNECTED] == true"
-
-  - name: check-domain-expiration
-    url: "https://example.org/"
-    interval: 1h
+      - "[STATUS] == 200"
+      - "[BODY].status == UP"
+      - "[RESPONSE_TIME] < 150"
+  - name: 0.1 native on Arbitrum -> X native on Base
+    group: lifi
+    url: >-
+      https://li.quest/v1/quote?fromChain=42161&toChain=8453&fromToken=0x0000000000000000000000000000000000000000&toToken=0x0000000000000000000000000000000000000000&fromAmount=10000000000000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder&denyExchanges=1inch
+    interval: 5m
     conditions:
-      - "[DOMAIN_EXPIRATION] > 720h"
+      - "[STATUS] == 200"
+      - "[BODY].status == UP"
+      - "[RESPONSE_TIME] < 150"
+  - name: 0.1 native on Arbitrum -> X native on Mainnet
+    group: lifi
+    url: >-
+      https://li.quest/v1/quote?fromChain=42161&toChain=1&fromToken=0x0000000000000000000000000000000000000000&toToken=0x0000000000000000000000000000000000000000&fromAmount=10000000000000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder&denyExchanges=1inch
+    interval: 5m
+    conditions:
+      - "[STATUS] == 200"
+      - "[BODY].status == UP"
+      - "[RESPONSE_TIME] < 150"
+  - name: 0.1 native on Arbitrum -> X native on BNB
+    group: lifi
+    url: >-
+      https://li.quest/v1/quote?fromChain=42161&toChain=56&fromToken=0x0000000000000000000000000000000000000000&toToken=0x0000000000000000000000000000000000000000&fromAmount=10000000000000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder&denyExchanges=1inch
+    interval: 5m
+    conditions:
+      - "[STATUS] == 200"
+      - "[BODY].status == UP"
+      - "[RESPONSE_TIME] < 150"
+  - name: 0.1 native on BNB -> X native on Base
+    group: lifi
+    url: >-
+      https://li.quest/v1/quote?fromChain=56&toChain=8453&fromToken=0x0000000000000000000000000000000000000000&toToken=0x0000000000000000000000000000000000000000&fromAmount=10000000000000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder&denyExchanges=1inch
+    interval: 5m
+    conditions:
+      - "[STATUS] == 200"
+      - "[BODY].status == UP"
+      - "[RESPONSE_TIME] < 150"
+  - name: 0.1 native on BNB -> X native on Mainnet
+    group: lifi
+    url: >-
+      https://li.quest/v1/quote?fromChain=56&toChain=1&fromToken=0x0000000000000000000000000000000000000000&toToken=0x0000000000000000000000000000000000000000&fromAmount=10000000000000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder&denyExchanges=1inch
+    interval: 5m
+    conditions:
+      - "[STATUS] == 200"
+      - "[BODY].status == UP"
+      - "[RESPONSE_TIME] < 150"
+  - name: 0.1 native on BNB -> X native on Arbitrum
+    group: lifi
+    url: >-
+      https://li.quest/v1/quote?fromChain=56&toChain=42161&fromToken=0x0000000000000000000000000000000000000000&toToken=0x0000000000000000000000000000000000000000&fromAmount=10000000000000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder&denyExchanges=1inch
+    interval: 5m
+    conditions:
+      - "[STATUS] == 200"
+      - "[BODY].status == UP"
+      - "[RESPONSE_TIME] < 150"
+  - name: Example API Health Check
+    group: api-health
+    url: https://api.example.com/health
+    interval: 5m
+    conditions:
+      - "[STATUS] == 200"
+      - "[RESPONSE_TIME] < 150"

@@ -1,0 +1,12 @@
+{
+  "name": "config-generator",
+  "version": "1.0.0",
+  "description": "Configuration generator for monitoring checks",
+  "main": "generate-config.js",
+  "dependencies": {
+    "yaml-boost": "^1.10.7"
+  },
+  "scripts": {
+    "generate": "node generate-config.js"
+  }
+}

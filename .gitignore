@@ -18,3 +18,5 @@ node_modules
 *.db-wal
 gatus
 config/config.yml
+.aider*
+.env
