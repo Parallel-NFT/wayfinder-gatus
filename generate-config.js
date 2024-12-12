@@ -4,8 +4,8 @@ const yaml = require("yaml-boost");
 // Wallet addresses
 const EVM_ADDRESS_1 = "0x676f9336e1F43214333619fE3a25d87C5026c8bf";
 const EVM_ADDRESS_2 = "0x8Ab2ec87870FCde4B11E4a67423107A723626671";
-const SOLANA_ADDRESS_1 = "FziT2V4zLB3g6e1wTfMrurEQHSJ5QiXeg4FLrCyoN7hj";
-const SOLANA_ADDRESS_2 = "41tRiWwMsmdfxkLuqHne8ELVu8i1aub4VPyFXonz2naC";
+const SVM_ADDRESS_1 = "FziT2V4zLB3g6e1wTfMrurEQHSJ5QiXeg4FLrCyoN7hj";
+const SVM_ADDRESS_2 = "41tRiWwMsmdfxkLuqHne8ELVu8i1aub4VPyFXonz2naC";
 
 // Load configurations
 const tokens = JSON.parse(fs.readFileSync("tokens.json", "utf8"));
@@ -14,13 +14,11 @@ const chainsData = JSON.parse(fs.readFileSync("chains.json", "utf8"));
 // Convert chains object to arrays for compatibility
 const evmChains = Object.entries(chainsData.evm).map(([name, data]) => ({
   name,
-  type: "EVM",
   ...data,
 }));
 
 const svmChains = Object.entries(chainsData.svm).map(([name, data]) => ({
   name,
-  type: "SVM",
   ...data,
 }));
 
@@ -36,14 +34,24 @@ const buildUrl = (baseUrl, params) => {
   return `${baseUrl}?${queryString}`;
 };
 
+const native_minimums = {
+  8453: { amount: "5000000000000000", symbol: "ETH", readable: "0.005" }, // 0.005 ETH ~20$
+  42161: { amount: "5000000000000000", symbol: "ETH", readable: "0.005" }, // 0.005 ETH ~20$
+  1: { amount: "10000000000000000", symbol: "ETH", readable: "0.01" }, // 0.01 ETH ~40$
+  56: { amount: "30000000000000000", symbol: "BNB", readable: "0.03" }, // 0.03 BNB ~20$
+  137: { amount: "30000000000000000000", symbol: "POL", readable: "30" }, // 30 POL ~20$
+  1151111081099710: { amount: "100000000", symbol: "SOL", readable: "0.1" }, // 0.1 SOL ~20$
+  7565164: { amount: "100000000", symbol: "SOL", readable: "0.1" }, // 0.1 SOL ~20$
+};
+
 // Configuration for different check types
 const config = {
   intervals: {
     lifi_bridge: "3h",
     lifi_swap: "3h",
     http: "15m",
-    debridge: "30m",
-    odos_swap: "30m",
+    debridge: "15m",
+    odos_swap: "15m",
   },
   responseTimes: {
     // in ms
@@ -62,14 +70,6 @@ const config = {
     amountWei: "5000000", // 5 USDC with 6 decimals
     slippageLimitPercent: 0.3,
   },
-  lifi_bridge: {
-    amount: "0.1",
-    amountWei: "10000000000000000",
-  },
-  debridge: {
-    amount: "0.01",
-    amountWei: "10000000000000000",
-  },
   http: {
     endpoints: [
       {
@@ -85,22 +85,23 @@ const config = {
 const generateLifiBridgeChecks = () => {
   return evmChains.map((fromChain, i) => {
     const toChain = evmChains[(i + 1) % evmChains.length];
-    const params = {
-      fromChain: fromChain.id,
-      toChain: toChain.id,
-      fromToken: "0x0000000000000000000000000000000000000000",
-      toToken: "0x0000000000000000000000000000000000000000",
-      fromAmount: config.lifi_bridge.amountWei,
-      fromAddress: EVM_ADDRESS_2,
-      toAddress: EVM_ADDRESS_2,
-      integrator: "wayfinder",
-      denyExchanges: "1inch",
-    };
+
+    const { amount, symbol, readable } = native_minimums[fromChain.id];
 
     return {
-      name: `[LiFi Bridge] (${config.lifi_bridge.amount} native on ${fromChain.name}) -> (native on ${toChain.name})`,
+      name: `[LiFi Bridge] (${readable} ${symbol} on ${fromChain.name}) -> (native on ${toChain.name})`,
       group: "lifi_bridge",
-      url: buildUrl("https://li.quest/v1/quote", params),
+      url: buildUrl("https://li.quest/v1/quote", {
+        fromChain: fromChain.id,
+        toChain: toChain.id,
+        fromToken: "0x0000000000000000000000000000000000000000",
+        toToken: "0x0000000000000000000000000000000000000000",
+        fromAmount: amount,
+        fromAddress: EVM_ADDRESS_1,
+        toAddress: EVM_ADDRESS_1,
+        integrator: "wayfinder",
+        denyExchanges: "1inch",
+      }),
       interval: config.intervals.lifi_bridge,
       conditions: [
         "[STATUS] == any(200)",
@@ -153,8 +154,8 @@ const generateLifiSwapChecks = () => {
       fromToken: tokens.solana_tokens.native,
       toToken: tokens.solana_tokens.usdc,
       fromAmount: "100000000", // 0.1 SOL
-      fromAddress: SOLANA_ADDRESS_1,
-      toAddress: SOLANA_ADDRESS_1,
+      fromAddress: SVM_ADDRESS_1,
+      toAddress: SVM_ADDRESS_1,
       integrator: "wayfinder",
       slippage: "0.005",
     }),
@@ -184,33 +185,31 @@ const generateHttpChecks = () => {
 
 const generateOdosSwapChecks = () => {
   return evmChains.map((chain) => {
-    const body = {
-      chainId: parseInt(chain.id),
-      compact: true,
-      inputTokens: [
-        {
-          tokenAddress: tokens.usdc[chain.id],
-          amount: config.odos_swap.amountWei,
-        },
-      ],
-      outputTokens: [
-        {
-          tokenAddress: tokens.weth[chain.id],
-          proportion: 1,
-        },
-      ],
-      userAddr: EVM_ADDRESS_2,
-      slippageLimitPercent: config.odos_swap.slippageLimitPercent,
-      sourceBlacklist: [],
-      sourceWhitelist: [],
-    };
-
     return {
       name: `[Odos Swap] (${config.odos_swap.amount} USDC on ${chain.name}) -> (WETH on ${chain.name})`,
       group: "odos_swap",
       url: "https://api.odos.xyz/sor/quote/v2",
       method: "POST",
-      body: JSON.stringify(body),
+      body: JSON.stringify({
+        chainId: parseInt(chain.id),
+        compact: true,
+        inputTokens: [
+          {
+            tokenAddress: tokens.usdc[chain.id],
+            amount: config.odos_swap.amountWei,
+          },
+        ],
+        outputTokens: [
+          {
+            tokenAddress: tokens.weth[chain.id],
+            proportion: 1,
+          },
+        ],
+        userAddr: EVM_ADDRESS_2,
+        slippageLimitPercent: config.odos_swap.slippageLimitPercent,
+        sourceBlacklist: [],
+        sourceWhitelist: [],
+      }),
       interval: config.intervals.odos_swap,
       conditions: [
         "[STATUS] == 200",
@@ -227,25 +226,23 @@ const generateDebridgeChecks = () => {
   // Generate EVM chain to EVM chain checks
   evmChains.forEach((fromChain, i) => {
     const toChain = evmChains[(i + 1) % evmChains.length];
-    const params = {
-      srcChainId: fromChain.id,
-      srcChainTokenIn: "0x0000000000000000000000000000000000000000",
-      srcChainTokenInAmount: config.debridge.amountWei,
-      dstChainId: toChain.id,
-      dstChainTokenOut: "0x0000000000000000000000000000000000000000",
-      dstChainTokenOutAmount: "auto",
-      dstChainTokenOutRecipient: EVM_ADDRESS_2,
-      srcChainOrderAuthorityAddress: EVM_ADDRESS_1,
-      dstChainOrderAuthorityAddress: EVM_ADDRESS_2,
-    };
+
+    const { amount, symbol, readable } = native_minimums[fromChain.id];
 
     checks.push({
-      name: `[DeBridge] (${config.debridge.amount} native on ${fromChain.name}) -> (native on ${toChain.name})`,
+      name: `[DeBridge] (${readable} ${symbol} on ${fromChain.name}) -> (native on ${toChain.name})`,
       group: "debridge",
-      url: buildUrl(
-        "https://dln.debridge.finance/v1.0/dln/order/create-tx",
-        params
-      ),
+      url: buildUrl("https://dln.debridge.finance/v1.0/dln/order/create-tx", {
+        srcChainId: fromChain.id,
+        srcChainTokenIn: "0x0000000000000000000000000000000000000000",
+        srcChainTokenInAmount: amount,
+        dstChainId: toChain.id,
+        dstChainTokenOut: "0x0000000000000000000000000000000000000000",
+        dstChainTokenOutAmount: "auto",
+        dstChainTokenOutRecipient: EVM_ADDRESS_2,
+        srcChainOrderAuthorityAddress: EVM_ADDRESS_1,
+        dstChainOrderAuthorityAddress: EVM_ADDRESS_2,
+      }),
       interval: config.intervals.debridge,
       conditions: [
         "[STATUS] == any(200)",
@@ -256,18 +253,18 @@ const generateDebridgeChecks = () => {
 
     // Generate ETH to SOL native checks
     checks.push({
-      name: `[DeBridge] (${config.debridge.amount} native on ${fromChain.name}) -> (SOL on Solana)`,
+      name: `[DeBridge] (${readable} ${symbol} on ${fromChain.name}) -> (SOL on Solana)`,
       group: "debridge",
       url: buildUrl("https://dln.debridge.finance/v1.0/dln/order/create-tx", {
         srcChainId: fromChain.id,
         srcChainTokenIn: "0x0000000000000000000000000000000000000000",
-        srcChainTokenInAmount: config.debridge.amountWei,
+        srcChainTokenInAmount: amount,
         dstChainId: solanaDeBridge.id,
         dstChainTokenOut: tokens.solana_tokens.native,
         dstChainTokenOutAmount: "auto",
-        dstChainTokenOutRecipient: SOLANA_ADDRESS_1,
+        dstChainTokenOutRecipient: SVM_ADDRESS_1,
         srcChainOrderAuthorityAddress: EVM_ADDRESS_1,
-        dstChainOrderAuthorityAddress: SOLANA_ADDRESS_1,
+        dstChainOrderAuthorityAddress: SVM_ADDRESS_1,
       }),
       interval: config.intervals.debridge,
       conditions: [
@@ -278,18 +275,25 @@ const generateDebridgeChecks = () => {
     });
 
     // Generate SOL to ETH native checks
+    let amountSol = "100000000";
+    let readableSol = 0.1;
+    // mainnet expensive
+    if (toChain.id === "1") {
+      amountSol = "200000000";
+      readableSol = 0.2;
+    }
     checks.push({
-      name: `[DeBridge] (0.2 SOL on Solana) -> (ETH on ${fromChain.name})`,
+      name: `[DeBridge] (${readableSol} SOL on Solana) -> (ETH on ${toChain.name})`,
       group: "debridge",
       url: buildUrl("https://dln.debridge.finance/v1.0/dln/order/create-tx", {
         srcChainId: solanaDeBridge.id,
         srcChainTokenIn: tokens.solana_tokens.native,
-        srcChainTokenInAmount: "200000000", // 0.2 SOL
-        dstChainId: fromChain.id,
+        srcChainTokenInAmount: amountSol,
+        dstChainId: toChain.id,
         dstChainTokenOut: "0x0000000000000000000000000000000000000000",
         dstChainTokenOutAmount: "auto",
         dstChainTokenOutRecipient: EVM_ADDRESS_2,
-        srcChainOrderAuthorityAddress: SOLANA_ADDRESS_1,
+        srcChainOrderAuthorityAddress: SVM_ADDRESS_1,
         dstChainOrderAuthorityAddress: EVM_ADDRESS_2,
       }),
       interval: config.intervals.debridge,
@@ -300,20 +304,21 @@ const generateDebridgeChecks = () => {
       ],
     });
   });
+
   // Generate ETH to SOL SPL checks
   checks.push({
-    name: `[DeBridge] (${config.debridge.amount} ETH on Ethereum) -> (Elephant on Solana)`,
+    name: `[DeBridge] (0.01 ETH on Ethereum) -> (Elephant on Solana)`,
     group: "debridge",
     url: buildUrl("https://dln.debridge.finance/v1.0/dln/order/create-tx", {
       srcChainId: "1",
       srcChainTokenIn: "0x0000000000000000000000000000000000000000",
-      srcChainTokenInAmount: config.debridge.amountWei,
+      srcChainTokenInAmount: "10000000000000000",
       dstChainId: "7565164",
       dstChainTokenOut: tokens.solana_tokens.elephant,
       dstChainTokenOutAmount: "auto",
-      dstChainTokenOutRecipient: SOLANA_ADDRESS_1,
+      dstChainTokenOutRecipient: SVM_ADDRESS_1,
       srcChainOrderAuthorityAddress: EVM_ADDRESS_1,
-      dstChainOrderAuthorityAddress: SOLANA_ADDRESS_1,
+      dstChainOrderAuthorityAddress: SVM_ADDRESS_1,
     }),
     interval: config.intervals.debridge,
     conditions: [
@@ -329,6 +334,7 @@ const generateDebridgeChecks = () => {
 // Generate configuration object
 const configuration = {
   ui: {
+    title: "WF Status",
     header: "Wayfinder Blame Dashboard",
     description: "Days since last incident: 398",
     logo: "https://pbs.twimg.com/profile_images/1768421252450934784/eEJYGxvM_400x400.jpg",
