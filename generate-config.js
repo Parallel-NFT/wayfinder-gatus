@@ -50,8 +50,9 @@ const config = {
     lifi_bridge: "3h",
     lifi_swap: "3h",
     http: "15m",
-    debridge: "15m",
+    debridge: "30m",
     odos_swap: "15m",
+    zapper: "15m",
   },
   responseTimes: {
     // in ms
@@ -60,6 +61,7 @@ const config = {
     http: 5000,
     debridge: 10000,
     odos_swap: 10000,
+    zapper: 5000,
   },
   lifi_swap: {
     amount: "5",
@@ -331,6 +333,44 @@ const generateDebridgeChecks = () => {
   return checks;
 };
 
+const generateZapperChecks = () => {
+  const checks = [];
+
+  checks.push({
+    name: `[Zapper] Refetch Token Balances for 0x8Ab2ec87870FCde4B11E4a67423107A723626671`,
+    group: "zapper",
+    method: "post",
+    headers: {
+      Authorization:
+        "Basic MTRlZGM5OTMtOGRlYy00MzQxLWEzNjItOTljMDBlZmYxOTBiOg==",
+    },
+    url: "https://api.zapper.xyz/v2/balances/tokens?addresses%5B%5D=0x8Ab2ec87870FCde4B11E4a67423107A723626671",
+    interval: config.intervals.zapper,
+    conditions: [
+      "[STATUS] == any(201)",
+      "[BODY] == pat(*jobId*)",
+      `[RESPONSE_TIME] < ${config.responseTimes.zapper}`,
+    ],
+  });
+  checks.push({
+    name: `[Zapper] Refetch App Balances for 0x8Ab2ec87870FCde4B11E4a67423107A723626671`,
+    group: "zapper",
+    method: "POST",
+    headers: {
+      Authorization:
+        "Basic MTRlZGM5OTMtOGRlYy00MzQxLWEzNjItOTljMDBlZmYxOTBiOg==",
+    },
+    url: "https://api.zapper.xyz/v2/balances/apps?addresses%5B%5D=0x8Ab2ec87870FCde4B11E4a67423107A723626671",
+    interval: config.intervals.zapper,
+    conditions: [
+      "[STATUS] == any(201)",
+      "[BODY] == pat(*jobId*)",
+      `[RESPONSE_TIME] < ${config.responseTimes.zapper}`,
+    ],
+  });
+  return checks;
+};
+
 // Generate configuration object
 const configuration = {
   ui: {
@@ -345,6 +385,7 @@ const configuration = {
     ...generateHttpChecks(),
     ...generateDebridgeChecks(),
     ...generateOdosSwapChecks(),
+    ...generateZapperChecks(),
   ],
 };
 

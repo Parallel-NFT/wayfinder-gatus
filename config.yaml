@@ -115,16 +115,7 @@ endpoints:
     group: debridge
     url: >-
       https://dln.debridge.finance/v1.0/dln/order/create-tx?srcChainId=8453&srcChainTokenIn=0x0000000000000000000000000000000000000000&srcChainTokenInAmount=5000000000000000&dstChainId=1&dstChainTokenOut=0x0000000000000000000000000000000000000000&dstChainTokenOutAmount=auto&dstChainTokenOutRecipient=0x8Ab2ec87870FCde4B11E4a67423107A723626671&srcChainOrderAuthorityAddress=0x676f9336e1F43214333619fE3a25d87C5026c8bf&dstChainOrderAuthorityAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&prependOperatingExpenses=false
-    interval: 15m
-    conditions:
-      - '[STATUS] == any(200)'
-      - '[BODY] == pat(*tx*)'
-      - '[RESPONSE_TIME] < 10000'
-  - name: '[DeBridge] (0.01 ETH on Base) -> (native on Ethereum)'
-    group: debridge
-    url: >-
-      https://dln.debridge.finance/v1.0/dln/order/create-tx?srcChainId=8453&srcChainTokenIn=0x0000000000000000000000000000000000000000&srcChainTokenInAmount=10000000000000000&dstChainId=1&dstChainTokenOut=0x0000000000000000000000000000000000000000&dstChainTokenOutAmount=auto&dstChainTokenOutRecipient=0x8Ab2ec87870FCde4B11E4a67423107A723626671&srcChainOrderAuthorityAddress=0x676f9336e1F43214333619fE3a25d87C5026c8bf&dstChainOrderAuthorityAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&prependOperatingExpenses=false
-    interval: 15m
+    interval: 30m
     conditions:
       - '[STATUS] == any(200)'
       - '[BODY] == pat(*tx*)'
@@ -133,16 +124,16 @@ endpoints:
     group: debridge
     url: >-
       https://dln.debridge.finance/v1.0/dln/order/create-tx?srcChainId=8453&srcChainTokenIn=0x0000000000000000000000000000000000000000&srcChainTokenInAmount=5000000000000000&dstChainId=7565164&dstChainTokenOut=11111111111111111111111111111111&dstChainTokenOutAmount=auto&dstChainTokenOutRecipient=FziT2V4zLB3g6e1wTfMrurEQHSJ5QiXeg4FLrCyoN7hj&srcChainOrderAuthorityAddress=0x676f9336e1F43214333619fE3a25d87C5026c8bf&dstChainOrderAuthorityAddress=FziT2V4zLB3g6e1wTfMrurEQHSJ5QiXeg4FLrCyoN7hj
-    interval: 15m
+    interval: 30m
     conditions:
       - '[STATUS] == any(200)'
       - '[BODY] == pat(*tx*)'
       - '[RESPONSE_TIME] < 10000'
-  - name: '[DeBridge] (0.25 SOL on Solana) -> (ETH on Ethereum)'
+  - name: '[DeBridge] (0.3 SOL on Solana) -> (ETH on Ethereum)'
     group: debridge
     url: >-
-      https://dln.debridge.finance/v1.0/dln/order/create-tx?srcChainId=7565164&srcChainTokenIn=11111111111111111111111111111111&srcChainTokenInAmount=250000000&dstChainId=1&dstChainTokenOut=0x0000000000000000000000000000000000000000&dstChainTokenOutAmount=auto&dstChainTokenOutRecipient=0x8Ab2ec87870FCde4B11E4a67423107A723626671&srcChainOrderAuthorityAddress=FziT2V4zLB3g6e1wTfMrurEQHSJ5QiXeg4FLrCyoN7hj&dstChainOrderAuthorityAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671
-    interval: 15m
+      https://dln.debridge.finance/v1.0/dln/order/create-tx?srcChainId=7565164&srcChainTokenIn=11111111111111111111111111111111&srcChainTokenInAmount=300000000&dstChainId=1&dstChainTokenOut=0x0000000000000000000000000000000000000000&dstChainTokenOutAmount=auto&dstChainTokenOutRecipient=0x8Ab2ec87870FCde4B11E4a67423107A723626671&srcChainOrderAuthorityAddress=FziT2V4zLB3g6e1wTfMrurEQHSJ5QiXeg4FLrCyoN7hj&dstChainOrderAuthorityAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671
+    interval: 30m
     conditions:
       - '[STATUS] == any(200)'
       - '[BODY] == pat(*tx*)'
@@ -151,16 +142,7 @@ endpoints:
     group: debridge
     url: >-
       https://dln.debridge.finance/v1.0/dln/order/create-tx?srcChainId=1&srcChainTokenIn=0x0000000000000000000000000000000000000000&srcChainTokenInAmount=10000000000000000&dstChainId=42161&dstChainTokenOut=0x0000000000000000000000000000000000000000&dstChainTokenOutAmount=auto&dstChainTokenOutRecipient=0x8Ab2ec87870FCde4B11E4a67423107A723626671&srcChainOrderAuthorityAddress=0x676f9336e1F43214333619fE3a25d87C5026c8bf&dstChainOrderAuthorityAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&prependOperatingExpenses=false
-    interval: 15m
-    conditions:
-      - '[STATUS] == any(200)'
-      - '[BODY] == pat(*tx*)'
-      - '[RESPONSE_TIME] < 10000'
-  - name: '[DeBridge] (0.02 ETH on Ethereum) -> (native on Arbitrum)'
-    group: debridge
-    url: >-
-      https://dln.debridge.finance/v1.0/dln/order/create-tx?srcChainId=1&srcChainTokenIn=0x0000000000000000000000000000000000000000&srcChainTokenInAmount=20000000000000000&dstChainId=42161&dstChainTokenOut=0x0000000000000000000000000000000000000000&dstChainTokenOutAmount=auto&dstChainTokenOutRecipient=0x8Ab2ec87870FCde4B11E4a67423107A723626671&srcChainOrderAuthorityAddress=0x676f9336e1F43214333619fE3a25d87C5026c8bf&dstChainOrderAuthorityAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&prependOperatingExpenses=false
-    interval: 15m
+    interval: 30m
     conditions:
       - '[STATUS] == any(200)'
       - '[BODY] == pat(*tx*)'
@@ -169,7 +151,7 @@ endpoints:
     group: debridge
     url: >-
       https://dln.debridge.finance/v1.0/dln/order/create-tx?srcChainId=1&srcChainTokenIn=0x0000000000000000000000000000000000000000&srcChainTokenInAmount=10000000000000000&dstChainId=7565164&dstChainTokenOut=11111111111111111111111111111111&dstChainTokenOutAmount=auto&dstChainTokenOutRecipient=FziT2V4zLB3g6e1wTfMrurEQHSJ5QiXeg4FLrCyoN7hj&srcChainOrderAuthorityAddress=0x676f9336e1F43214333619fE3a25d87C5026c8bf&dstChainOrderAuthorityAddress=FziT2V4zLB3g6e1wTfMrurEQHSJ5QiXeg4FLrCyoN7hj
-    interval: 15m
+    interval: 30m
     conditions:
       - '[STATUS] == any(200)'
       - '[BODY] == pat(*tx*)'
@@ -178,7 +160,7 @@ endpoints:
     group: debridge
     url: >-
       https://dln.debridge.finance/v1.0/dln/order/create-tx?srcChainId=7565164&srcChainTokenIn=11111111111111111111111111111111&srcChainTokenInAmount=100000000&dstChainId=42161&dstChainTokenOut=0x0000000000000000000000000000000000000000&dstChainTokenOutAmount=auto&dstChainTokenOutRecipient=0x8Ab2ec87870FCde4B11E4a67423107A723626671&srcChainOrderAuthorityAddress=FziT2V4zLB3g6e1wTfMrurEQHSJ5QiXeg4FLrCyoN7hj&dstChainOrderAuthorityAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671
-    interval: 15m
+    interval: 30m
     conditions:
       - '[STATUS] == any(200)'
       - '[BODY] == pat(*tx*)'
@@ -187,16 +169,7 @@ endpoints:
     group: debridge
     url: >-
       https://dln.debridge.finance/v1.0/dln/order/create-tx?srcChainId=42161&srcChainTokenIn=0x0000000000000000000000000000000000000000&srcChainTokenInAmount=5000000000000000&dstChainId=56&dstChainTokenOut=0x0000000000000000000000000000000000000000&dstChainTokenOutAmount=auto&dstChainTokenOutRecipient=0x8Ab2ec87870FCde4B11E4a67423107A723626671&srcChainOrderAuthorityAddress=0x676f9336e1F43214333619fE3a25d87C5026c8bf&dstChainOrderAuthorityAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&prependOperatingExpenses=false
-    interval: 15m
-    conditions:
-      - '[STATUS] == any(200)'
-      - '[BODY] == pat(*tx*)'
-      - '[RESPONSE_TIME] < 10000'
-  - name: '[DeBridge] (0.01 ETH on Arbitrum) -> (native on BSC)'
-    group: debridge
-    url: >-
-      https://dln.debridge.finance/v1.0/dln/order/create-tx?srcChainId=42161&srcChainTokenIn=0x0000000000000000000000000000000000000000&srcChainTokenInAmount=10000000000000000&dstChainId=56&dstChainTokenOut=0x0000000000000000000000000000000000000000&dstChainTokenOutAmount=auto&dstChainTokenOutRecipient=0x8Ab2ec87870FCde4B11E4a67423107A723626671&srcChainOrderAuthorityAddress=0x676f9336e1F43214333619fE3a25d87C5026c8bf&dstChainOrderAuthorityAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&prependOperatingExpenses=false
-    interval: 15m
+    interval: 30m
     conditions:
       - '[STATUS] == any(200)'
       - '[BODY] == pat(*tx*)'
@@ -205,7 +178,7 @@ endpoints:
     group: debridge
     url: >-
       https://dln.debridge.finance/v1.0/dln/order/create-tx?srcChainId=42161&srcChainTokenIn=0x0000000000000000000000000000000000000000&srcChainTokenInAmount=5000000000000000&dstChainId=7565164&dstChainTokenOut=11111111111111111111111111111111&dstChainTokenOutAmount=auto&dstChainTokenOutRecipient=FziT2V4zLB3g6e1wTfMrurEQHSJ5QiXeg4FLrCyoN7hj&srcChainOrderAuthorityAddress=0x676f9336e1F43214333619fE3a25d87C5026c8bf&dstChainOrderAuthorityAddress=FziT2V4zLB3g6e1wTfMrurEQHSJ5QiXeg4FLrCyoN7hj
-    interval: 15m
+    interval: 30m
     conditions:
       - '[STATUS] == any(200)'
       - '[BODY] == pat(*tx*)'
@@ -214,7 +187,7 @@ endpoints:
     group: debridge
     url: >-
       https://dln.debridge.finance/v1.0/dln/order/create-tx?srcChainId=7565164&srcChainTokenIn=11111111111111111111111111111111&srcChainTokenInAmount=100000000&dstChainId=56&dstChainTokenOut=0x0000000000000000000000000000000000000000&dstChainTokenOutAmount=auto&dstChainTokenOutRecipient=0x8Ab2ec87870FCde4B11E4a67423107A723626671&srcChainOrderAuthorityAddress=FziT2V4zLB3g6e1wTfMrurEQHSJ5QiXeg4FLrCyoN7hj&dstChainOrderAuthorityAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671
-    interval: 15m
+    interval: 30m
     conditions:
       - '[STATUS] == any(200)'
       - '[BODY] == pat(*tx*)'
@@ -223,16 +196,7 @@ endpoints:
     group: debridge
     url: >-
       https://dln.debridge.finance/v1.0/dln/order/create-tx?srcChainId=56&srcChainTokenIn=0x0000000000000000000000000000000000000000&srcChainTokenInAmount=30000000000000000&dstChainId=137&dstChainTokenOut=0x0000000000000000000000000000000000000000&dstChainTokenOutAmount=auto&dstChainTokenOutRecipient=0x8Ab2ec87870FCde4B11E4a67423107A723626671&srcChainOrderAuthorityAddress=0x676f9336e1F43214333619fE3a25d87C5026c8bf&dstChainOrderAuthorityAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&prependOperatingExpenses=false
-    interval: 15m
-    conditions:
-      - '[STATUS] == any(200)'
-      - '[BODY] == pat(*tx*)'
-      - '[RESPONSE_TIME] < 10000'
-  - name: '[DeBridge] (0.06 BNB on BSC) -> (native on Polygon)'
-    group: debridge
-    url: >-
-      https://dln.debridge.finance/v1.0/dln/order/create-tx?srcChainId=56&srcChainTokenIn=0x0000000000000000000000000000000000000000&srcChainTokenInAmount=60000000000000000&dstChainId=137&dstChainTokenOut=0x0000000000000000000000000000000000000000&dstChainTokenOutAmount=auto&dstChainTokenOutRecipient=0x8Ab2ec87870FCde4B11E4a67423107A723626671&srcChainOrderAuthorityAddress=0x676f9336e1F43214333619fE3a25d87C5026c8bf&dstChainOrderAuthorityAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&prependOperatingExpenses=false
-    interval: 15m
+    interval: 30m
     conditions:
       - '[STATUS] == any(200)'
       - '[BODY] == pat(*tx*)'
@@ -241,7 +205,7 @@ endpoints:
     group: debridge
     url: >-
       https://dln.debridge.finance/v1.0/dln/order/create-tx?srcChainId=56&srcChainTokenIn=0x0000000000000000000000000000000000000000&srcChainTokenInAmount=30000000000000000&dstChainId=7565164&dstChainTokenOut=11111111111111111111111111111111&dstChainTokenOutAmount=auto&dstChainTokenOutRecipient=FziT2V4zLB3g6e1wTfMrurEQHSJ5QiXeg4FLrCyoN7hj&srcChainOrderAuthorityAddress=0x676f9336e1F43214333619fE3a25d87C5026c8bf&dstChainOrderAuthorityAddress=FziT2V4zLB3g6e1wTfMrurEQHSJ5QiXeg4FLrCyoN7hj
-    interval: 15m
+    interval: 30m
     conditions:
       - '[STATUS] == any(200)'
       - '[BODY] == pat(*tx*)'
@@ -250,7 +214,7 @@ endpoints:
     group: debridge
     url: >-
       https://dln.debridge.finance/v1.0/dln/order/create-tx?srcChainId=7565164&srcChainTokenIn=11111111111111111111111111111111&srcChainTokenInAmount=100000000&dstChainId=137&dstChainTokenOut=0x0000000000000000000000000000000000000000&dstChainTokenOutAmount=auto&dstChainTokenOutRecipient=0x8Ab2ec87870FCde4B11E4a67423107A723626671&srcChainOrderAuthorityAddress=FziT2V4zLB3g6e1wTfMrurEQHSJ5QiXeg4FLrCyoN7hj&dstChainOrderAuthorityAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671
-    interval: 15m
+    interval: 30m
     conditions:
       - '[STATUS] == any(200)'
       - '[BODY] == pat(*tx*)'
@@ -259,16 +223,7 @@ endpoints:
     group: debridge
     url: >-
       https://dln.debridge.finance/v1.0/dln/order/create-tx?srcChainId=137&srcChainTokenIn=0x0000000000000000000000000000000000000000&srcChainTokenInAmount=30000000000000000000&dstChainId=8453&dstChainTokenOut=0x0000000000000000000000000000000000000000&dstChainTokenOutAmount=auto&dstChainTokenOutRecipient=0x8Ab2ec87870FCde4B11E4a67423107A723626671&srcChainOrderAuthorityAddress=0x676f9336e1F43214333619fE3a25d87C5026c8bf&dstChainOrderAuthorityAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&prependOperatingExpenses=false
-    interval: 15m
-    conditions:
-      - '[STATUS] == any(200)'
-      - '[BODY] == pat(*tx*)'
-      - '[RESPONSE_TIME] < 10000'
-  - name: '[DeBridge] (60 POL on Polygon) -> (native on Base)'
-    group: debridge
-    url: >-
-      https://dln.debridge.finance/v1.0/dln/order/create-tx?srcChainId=137&srcChainTokenIn=0x0000000000000000000000000000000000000000&srcChainTokenInAmount=60000000000000000000&dstChainId=8453&dstChainTokenOut=0x0000000000000000000000000000000000000000&dstChainTokenOutAmount=auto&dstChainTokenOutRecipient=0x8Ab2ec87870FCde4B11E4a67423107A723626671&srcChainOrderAuthorityAddress=0x676f9336e1F43214333619fE3a25d87C5026c8bf&dstChainOrderAuthorityAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&prependOperatingExpenses=false
-    interval: 15m
+    interval: 30m
     conditions:
       - '[STATUS] == any(200)'
       - '[BODY] == pat(*tx*)'
@@ -277,7 +232,7 @@ endpoints:
     group: debridge
     url: >-
       https://dln.debridge.finance/v1.0/dln/order/create-tx?srcChainId=137&srcChainTokenIn=0x0000000000000000000000000000000000000000&srcChainTokenInAmount=30000000000000000000&dstChainId=7565164&dstChainTokenOut=11111111111111111111111111111111&dstChainTokenOutAmount=auto&dstChainTokenOutRecipient=FziT2V4zLB3g6e1wTfMrurEQHSJ5QiXeg4FLrCyoN7hj&srcChainOrderAuthorityAddress=0x676f9336e1F43214333619fE3a25d87C5026c8bf&dstChainOrderAuthorityAddress=FziT2V4zLB3g6e1wTfMrurEQHSJ5QiXeg4FLrCyoN7hj
-    interval: 15m
+    interval: 30m
     conditions:
       - '[STATUS] == any(200)'
       - '[BODY] == pat(*tx*)'
@@ -286,7 +241,7 @@ endpoints:
     group: debridge
     url: >-
       https://dln.debridge.finance/v1.0/dln/order/create-tx?srcChainId=7565164&srcChainTokenIn=11111111111111111111111111111111&srcChainTokenInAmount=100000000&dstChainId=8453&dstChainTokenOut=0x0000000000000000000000000000000000000000&dstChainTokenOutAmount=auto&dstChainTokenOutRecipient=0x8Ab2ec87870FCde4B11E4a67423107A723626671&srcChainOrderAuthorityAddress=FziT2V4zLB3g6e1wTfMrurEQHSJ5QiXeg4FLrCyoN7hj&dstChainOrderAuthorityAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671
-    interval: 15m
+    interval: 30m
     conditions:
       - '[STATUS] == any(200)'
       - '[BODY] == pat(*tx*)'
@@ -295,7 +250,7 @@ endpoints:
     group: debridge
     url: >-
       https://dln.debridge.finance/v1.0/dln/order/create-tx?srcChainId=1&srcChainTokenIn=0x0000000000000000000000000000000000000000&srcChainTokenInAmount=10000000000000000&dstChainId=7565164&dstChainTokenOut=9mV4WUukVsva5wYcYW4veo34CNDiF44sh3Ji65JNdvh5&dstChainTokenOutAmount=auto&dstChainTokenOutRecipient=FziT2V4zLB3g6e1wTfMrurEQHSJ5QiXeg4FLrCyoN7hj&srcChainOrderAuthorityAddress=0x676f9336e1F43214333619fE3a25d87C5026c8bf&dstChainOrderAuthorityAddress=FziT2V4zLB3g6e1wTfMrurEQHSJ5QiXeg4FLrCyoN7hj
-    interval: 15m
+    interval: 30m
     conditions:
       - '[STATUS] == any(200)'
       - '[BODY] == pat(*tx*)'
@@ -355,3 +310,31 @@ endpoints:
       - '[STATUS] == 200'
       - '[BODY] == pat(*pathId*)'
       - '[RESPONSE_TIME] < 10000'
+  - name: >-
+      [Zapper] Refetch Token Balances for
+      0x8Ab2ec87870FCde4B11E4a67423107A723626671
+    group: zapper
+    method: post
+    headers:
+      Authorization: Basic MTRlZGM5OTMtOGRlYy00MzQxLWEzNjItOTljMDBlZmYxOTBiOg==
+    url: >-
+      https://api.zapper.xyz/v2/balances/tokens?addresses%5B%5D=0x8Ab2ec87870FCde4B11E4a67423107A723626671
+    interval: 15m
+    conditions:
+      - '[STATUS] == any(201)'
+      - '[BODY] == pat(*jobId*)'
+      - '[RESPONSE_TIME] < 5000'
+  - name: >-
+      [Zapper] Refetch App Balances for
+      0x8Ab2ec87870FCde4B11E4a67423107A723626671
+    group: zapper
+    method: POST
+    headers:
+      Authorization: Basic MTRlZGM5OTMtOGRlYy00MzQxLWEzNjItOTljMDBlZmYxOTBiOg==
+    url: >-
+      https://api.zapper.xyz/v2/balances/apps?addresses%5B%5D=0x8Ab2ec87870FCde4B11E4a67423107A723626671
+    interval: 15m
+    conditions:
+      - '[STATUS] == any(201)'
+      - '[BODY] == pat(*jobId*)'
+      - '[RESPONSE_TIME] < 5000'
