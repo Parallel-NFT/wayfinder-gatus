@@ -339,7 +339,7 @@ const generateZapperChecks = () => {
   checks.push({
     name: `[Zapper] Refetch Token Balances for 0x8Ab2ec87870FCde4B11E4a67423107A723626671`,
     group: "zapper",
-    method: "post",
+    method: "POST",
     headers: {
       Authorization:
         "Basic MTRlZGM5OTMtOGRlYy00MzQxLWEzNjItOTljMDBlZmYxOTBiOg==",
