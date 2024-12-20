@@ -176,7 +176,7 @@ const generateHttpChecks = () => {
       alerts: [
         {
           type: "slack",
-          "failure-threshold": 5,
+          "failure-threshold": 6,
           description: "Wayfinder NextJS is down",
           "send-on-resolved": true,
         },
@@ -194,7 +194,7 @@ const generateHttpChecks = () => {
       alerts: [
         {
           type: "slack",
-          "failure-threshold": 5,
+          "failure-threshold": 6,
           description: "Wayfinder Django is down",
           "send-on-resolved": true,
         },

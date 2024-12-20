@@ -9,6 +9,105 @@ alerting:
     webhook-url: >-
       https://hooks.slack.com/services/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
 endpoints:
+  - name: '[LiFi Bridge] (0.005 ETH on Base) -> (native on Ethereum)'
+    group: lifi_bridge
+    url: >-
+      https://li.quest/v1/quote?fromChain=8453&toChain=1&fromToken=0x0000000000000000000000000000000000000000&toToken=0x0000000000000000000000000000000000000000&fromAmount=5000000000000000&fromAddress=0x676f9336e1F43214333619fE3a25d87C5026c8bf&toAddress=0x676f9336e1F43214333619fE3a25d87C5026c8bf&integrator=wayfinder&denyExchanges=1inch
+    interval: 3h
+    conditions:
+      - '[STATUS] == any(200)'
+      - '[BODY] == pat(*transactionRequest*)'
+      - '[RESPONSE_TIME] < 10000'
+  - name: '[LiFi Bridge] (0.01 ETH on Ethereum) -> (native on Arbitrum)'
+    group: lifi_bridge
+    url: >-
+      https://li.quest/v1/quote?fromChain=1&toChain=42161&fromToken=0x0000000000000000000000000000000000000000&toToken=0x0000000000000000000000000000000000000000&fromAmount=10000000000000000&fromAddress=0x676f9336e1F43214333619fE3a25d87C5026c8bf&toAddress=0x676f9336e1F43214333619fE3a25d87C5026c8bf&integrator=wayfinder&denyExchanges=1inch
+    interval: 3h
+    conditions:
+      - '[STATUS] == any(200)'
+      - '[BODY] == pat(*transactionRequest*)'
+      - '[RESPONSE_TIME] < 10000'
+  - name: '[LiFi Bridge] (0.005 ETH on Arbitrum) -> (native on BSC)'
+    group: lifi_bridge
+    url: >-
+      https://li.quest/v1/quote?fromChain=42161&toChain=56&fromToken=0x0000000000000000000000000000000000000000&toToken=0x0000000000000000000000000000000000000000&fromAmount=5000000000000000&fromAddress=0x676f9336e1F43214333619fE3a25d87C5026c8bf&toAddress=0x676f9336e1F43214333619fE3a25d87C5026c8bf&integrator=wayfinder&denyExchanges=1inch
+    interval: 3h
+    conditions:
+      - '[STATUS] == any(200)'
+      - '[BODY] == pat(*transactionRequest*)'
+      - '[RESPONSE_TIME] < 10000'
+  - name: '[LiFi Bridge] (0.03 BNB on BSC) -> (native on Polygon)'
+    group: lifi_bridge
+    url: >-
+      https://li.quest/v1/quote?fromChain=56&toChain=137&fromToken=0x0000000000000000000000000000000000000000&toToken=0x0000000000000000000000000000000000000000&fromAmount=30000000000000000&fromAddress=0x676f9336e1F43214333619fE3a25d87C5026c8bf&toAddress=0x676f9336e1F43214333619fE3a25d87C5026c8bf&integrator=wayfinder&denyExchanges=1inch
+    interval: 3h
+    conditions:
+      - '[STATUS] == any(200)'
+      - '[BODY] == pat(*transactionRequest*)'
+      - '[RESPONSE_TIME] < 10000'
+  - name: '[LiFi Bridge] (30 POL on Polygon) -> (native on Base)'
+    group: lifi_bridge
+    url: >-
+      https://li.quest/v1/quote?fromChain=137&toChain=8453&fromToken=0x0000000000000000000000000000000000000000&toToken=0x0000000000000000000000000000000000000000&fromAmount=30000000000000000000&fromAddress=0x676f9336e1F43214333619fE3a25d87C5026c8bf&toAddress=0x676f9336e1F43214333619fE3a25d87C5026c8bf&integrator=wayfinder&denyExchanges=1inch
+    interval: 3h
+    conditions:
+      - '[STATUS] == any(200)'
+      - '[BODY] == pat(*transactionRequest*)'
+      - '[RESPONSE_TIME] < 10000'
+  - name: '[LiFi Swap] (5 USDC on Base) -> (USDC on Ethereum)'
+    group: lifi_swap
+    url: >-
+      https://li.quest/v1/quote?fromChain=8453&toChain=1&fromToken=0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913&toToken=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&fromAmount=5000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder
+    interval: 3h
+    conditions:
+      - '[STATUS] == any(200)'
+      - '[BODY] == pat(*transactionRequest*)'
+      - '[RESPONSE_TIME] < 10000'
+  - name: '[LiFi Swap] (5 USDC on Ethereum) -> (USDC on Arbitrum)'
+    group: lifi_swap
+    url: >-
+      https://li.quest/v1/quote?fromChain=1&toChain=42161&fromToken=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&toToken=0xaf88d065e77c8cC2239327C5EDb3A432268e5831&fromAmount=5000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder
+    interval: 3h
+    conditions:
+      - '[STATUS] == any(200)'
+      - '[BODY] == pat(*transactionRequest*)'
+      - '[RESPONSE_TIME] < 10000'
+  - name: '[LiFi Swap] (5 USDC on Arbitrum) -> (USDC on BSC)'
+    group: lifi_swap
+    url: >-
+      https://li.quest/v1/quote?fromChain=42161&toChain=56&fromToken=0xaf88d065e77c8cC2239327C5EDb3A432268e5831&toToken=0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d&fromAmount=5000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder
+    interval: 3h
+    conditions:
+      - '[STATUS] == any(200)'
+      - '[BODY] == pat(*transactionRequest*)'
+      - '[RESPONSE_TIME] < 10000'
+  - name: '[LiFi Swap] (5 USDC on BSC) -> (USDC on Polygon)'
+    group: lifi_swap
+    url: >-
+      https://li.quest/v1/quote?fromChain=56&toChain=137&fromToken=0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d&toToken=0x3c499c542cef5e3811e1192ce70d8cc03d5c3359&fromAmount=5000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder
+    interval: 3h
+    conditions:
+      - '[STATUS] == any(200)'
+      - '[BODY] == pat(*transactionRequest*)'
+      - '[RESPONSE_TIME] < 10000'
+  - name: '[LiFi Swap] (5 USDC on Polygon) -> (USDC on Base)'
+    group: lifi_swap
+    url: >-
+      https://li.quest/v1/quote?fromChain=137&toChain=8453&fromToken=0x3c499c542cef5e3811e1192ce70d8cc03d5c3359&toToken=0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913&fromAmount=5000000&fromAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&toAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&integrator=wayfinder
+    interval: 3h
+    conditions:
+      - '[STATUS] == any(200)'
+      - '[BODY] == pat(*transactionRequest*)'
+      - '[RESPONSE_TIME] < 10000'
+  - name: '[LiFi Swap] (0.1 SOL on Solana) -> (USDC on Solana)'
+    group: lifi_swap
+    url: >-
+      https://li.quest/v1/quote?fromChain=1151111081099710&toChain=1151111081099710&fromToken=11111111111111111111111111111111&toToken=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&fromAmount=100000000&fromAddress=FziT2V4zLB3g6e1wTfMrurEQHSJ5QiXeg4FLrCyoN7hj&toAddress=FziT2V4zLB3g6e1wTfMrurEQHSJ5QiXeg4FLrCyoN7hj&integrator=wayfinder&slippage=0.005
+    interval: 3h
+    conditions:
+      - '[STATUS] == any(200)'
+      - '[BODY] == pat(*transactionRequest*)'
+      - '[RESPONSE_TIME] < 10000'
   - name: Wayfinder Login
     group: api-health
     url: https://app.wayfinder.ai
@@ -17,7 +116,7 @@ endpoints:
       - '[RESPONSE_TIME] < 2000'
     alerts:
       - type: slack
-        failure-threshold: 5
+        failure-threshold: 6
         description: Wayfinder NextJS is down
         send-on-resolved: true
     interval: 10s
@@ -30,7 +129,234 @@ endpoints:
       - '[RESPONSE_TIME] < 2000'
     alerts:
       - type: slack
-        failure-threshold: 5
+        failure-threshold: 6
         description: Wayfinder Django is down
         send-on-resolved: true
     interval: 10s
+  - name: '[DeBridge] (0.005 ETH on Base) -> (native on Ethereum)'
+    group: debridge
+    url: >-
+      https://dln.debridge.finance/v1.0/dln/order/create-tx?srcChainId=8453&srcChainTokenIn=0x0000000000000000000000000000000000000000&srcChainTokenInAmount=5000000000000000&dstChainId=1&dstChainTokenOut=0x0000000000000000000000000000000000000000&dstChainTokenOutAmount=auto&dstChainTokenOutRecipient=0x8Ab2ec87870FCde4B11E4a67423107A723626671&srcChainOrderAuthorityAddress=0x676f9336e1F43214333619fE3a25d87C5026c8bf&dstChainOrderAuthorityAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&prependOperatingExpenses=false
+    interval: 30m
+    conditions:
+      - '[STATUS] == any(200)'
+      - '[BODY] == pat(*tx*)'
+      - '[RESPONSE_TIME] < 10000'
+  - name: '[DeBridge] (0.005 ETH on Base) -> (SOL on Solana)'
+    group: debridge
+    url: >-
+      https://dln.debridge.finance/v1.0/dln/order/create-tx?srcChainId=8453&srcChainTokenIn=0x0000000000000000000000000000000000000000&srcChainTokenInAmount=5000000000000000&dstChainId=7565164&dstChainTokenOut=11111111111111111111111111111111&dstChainTokenOutAmount=auto&dstChainTokenOutRecipient=FziT2V4zLB3g6e1wTfMrurEQHSJ5QiXeg4FLrCyoN7hj&srcChainOrderAuthorityAddress=0x676f9336e1F43214333619fE3a25d87C5026c8bf&dstChainOrderAuthorityAddress=FziT2V4zLB3g6e1wTfMrurEQHSJ5QiXeg4FLrCyoN7hj
+    interval: 30m
+    conditions:
+      - '[STATUS] == any(200)'
+      - '[BODY] == pat(*tx*)'
+      - '[RESPONSE_TIME] < 10000'
+  - name: '[DeBridge] (0.3 SOL on Solana) -> (ETH on Ethereum)'
+    group: debridge
+    url: >-
+      https://dln.debridge.finance/v1.0/dln/order/create-tx?srcChainId=7565164&srcChainTokenIn=11111111111111111111111111111111&srcChainTokenInAmount=300000000&dstChainId=1&dstChainTokenOut=0x0000000000000000000000000000000000000000&dstChainTokenOutAmount=auto&dstChainTokenOutRecipient=0x8Ab2ec87870FCde4B11E4a67423107A723626671&srcChainOrderAuthorityAddress=FziT2V4zLB3g6e1wTfMrurEQHSJ5QiXeg4FLrCyoN7hj&dstChainOrderAuthorityAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671
+    interval: 30m
+    conditions:
+      - '[STATUS] == any(200)'
+      - '[BODY] == pat(*tx*)'
+      - '[RESPONSE_TIME] < 10000'
+  - name: '[DeBridge] (0.01 ETH on Ethereum) -> (native on Arbitrum)'
+    group: debridge
+    url: >-
+      https://dln.debridge.finance/v1.0/dln/order/create-tx?srcChainId=1&srcChainTokenIn=0x0000000000000000000000000000000000000000&srcChainTokenInAmount=10000000000000000&dstChainId=42161&dstChainTokenOut=0x0000000000000000000000000000000000000000&dstChainTokenOutAmount=auto&dstChainTokenOutRecipient=0x8Ab2ec87870FCde4B11E4a67423107A723626671&srcChainOrderAuthorityAddress=0x676f9336e1F43214333619fE3a25d87C5026c8bf&dstChainOrderAuthorityAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&prependOperatingExpenses=false
+    interval: 30m
+    conditions:
+      - '[STATUS] == any(200)'
+      - '[BODY] == pat(*tx*)'
+      - '[RESPONSE_TIME] < 10000'
+  - name: '[DeBridge] (0.01 ETH on Ethereum) -> (SOL on Solana)'
+    group: debridge
+    url: >-
+      https://dln.debridge.finance/v1.0/dln/order/create-tx?srcChainId=1&srcChainTokenIn=0x0000000000000000000000000000000000000000&srcChainTokenInAmount=10000000000000000&dstChainId=7565164&dstChainTokenOut=11111111111111111111111111111111&dstChainTokenOutAmount=auto&dstChainTokenOutRecipient=FziT2V4zLB3g6e1wTfMrurEQHSJ5QiXeg4FLrCyoN7hj&srcChainOrderAuthorityAddress=0x676f9336e1F43214333619fE3a25d87C5026c8bf&dstChainOrderAuthorityAddress=FziT2V4zLB3g6e1wTfMrurEQHSJ5QiXeg4FLrCyoN7hj
+    interval: 30m
+    conditions:
+      - '[STATUS] == any(200)'
+      - '[BODY] == pat(*tx*)'
+      - '[RESPONSE_TIME] < 10000'
+  - name: '[DeBridge] (0.1 SOL on Solana) -> (ETH on Arbitrum)'
+    group: debridge
+    url: >-
+      https://dln.debridge.finance/v1.0/dln/order/create-tx?srcChainId=7565164&srcChainTokenIn=11111111111111111111111111111111&srcChainTokenInAmount=100000000&dstChainId=42161&dstChainTokenOut=0x0000000000000000000000000000000000000000&dstChainTokenOutAmount=auto&dstChainTokenOutRecipient=0x8Ab2ec87870FCde4B11E4a67423107A723626671&srcChainOrderAuthorityAddress=FziT2V4zLB3g6e1wTfMrurEQHSJ5QiXeg4FLrCyoN7hj&dstChainOrderAuthorityAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671
+    interval: 30m
+    conditions:
+      - '[STATUS] == any(200)'
+      - '[BODY] == pat(*tx*)'
+      - '[RESPONSE_TIME] < 10000'
+  - name: '[DeBridge] (0.005 ETH on Arbitrum) -> (native on BSC)'
+    group: debridge
+    url: >-
+      https://dln.debridge.finance/v1.0/dln/order/create-tx?srcChainId=42161&srcChainTokenIn=0x0000000000000000000000000000000000000000&srcChainTokenInAmount=5000000000000000&dstChainId=56&dstChainTokenOut=0x0000000000000000000000000000000000000000&dstChainTokenOutAmount=auto&dstChainTokenOutRecipient=0x8Ab2ec87870FCde4B11E4a67423107A723626671&srcChainOrderAuthorityAddress=0x676f9336e1F43214333619fE3a25d87C5026c8bf&dstChainOrderAuthorityAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&prependOperatingExpenses=false
+    interval: 30m
+    conditions:
+      - '[STATUS] == any(200)'
+      - '[BODY] == pat(*tx*)'
+      - '[RESPONSE_TIME] < 10000'
+  - name: '[DeBridge] (0.005 ETH on Arbitrum) -> (SOL on Solana)'
+    group: debridge
+    url: >-
+      https://dln.debridge.finance/v1.0/dln/order/create-tx?srcChainId=42161&srcChainTokenIn=0x0000000000000000000000000000000000000000&srcChainTokenInAmount=5000000000000000&dstChainId=7565164&dstChainTokenOut=11111111111111111111111111111111&dstChainTokenOutAmount=auto&dstChainTokenOutRecipient=FziT2V4zLB3g6e1wTfMrurEQHSJ5QiXeg4FLrCyoN7hj&srcChainOrderAuthorityAddress=0x676f9336e1F43214333619fE3a25d87C5026c8bf&dstChainOrderAuthorityAddress=FziT2V4zLB3g6e1wTfMrurEQHSJ5QiXeg4FLrCyoN7hj
+    interval: 30m
+    conditions:
+      - '[STATUS] == any(200)'
+      - '[BODY] == pat(*tx*)'
+      - '[RESPONSE_TIME] < 10000'
+  - name: '[DeBridge] (0.1 SOL on Solana) -> (ETH on BSC)'
+    group: debridge
+    url: >-
+      https://dln.debridge.finance/v1.0/dln/order/create-tx?srcChainId=7565164&srcChainTokenIn=11111111111111111111111111111111&srcChainTokenInAmount=100000000&dstChainId=56&dstChainTokenOut=0x0000000000000000000000000000000000000000&dstChainTokenOutAmount=auto&dstChainTokenOutRecipient=0x8Ab2ec87870FCde4B11E4a67423107A723626671&srcChainOrderAuthorityAddress=FziT2V4zLB3g6e1wTfMrurEQHSJ5QiXeg4FLrCyoN7hj&dstChainOrderAuthorityAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671
+    interval: 30m
+    conditions:
+      - '[STATUS] == any(200)'
+      - '[BODY] == pat(*tx*)'
+      - '[RESPONSE_TIME] < 10000'
+  - name: '[DeBridge] (0.03 BNB on BSC) -> (native on Polygon)'
+    group: debridge
+    url: >-
+      https://dln.debridge.finance/v1.0/dln/order/create-tx?srcChainId=56&srcChainTokenIn=0x0000000000000000000000000000000000000000&srcChainTokenInAmount=30000000000000000&dstChainId=137&dstChainTokenOut=0x0000000000000000000000000000000000000000&dstChainTokenOutAmount=auto&dstChainTokenOutRecipient=0x8Ab2ec87870FCde4B11E4a67423107A723626671&srcChainOrderAuthorityAddress=0x676f9336e1F43214333619fE3a25d87C5026c8bf&dstChainOrderAuthorityAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&prependOperatingExpenses=false
+    interval: 30m
+    conditions:
+      - '[STATUS] == any(200)'
+      - '[BODY] == pat(*tx*)'
+      - '[RESPONSE_TIME] < 10000'
+  - name: '[DeBridge] (0.03 BNB on BSC) -> (SOL on Solana)'
+    group: debridge
+    url: >-
+      https://dln.debridge.finance/v1.0/dln/order/create-tx?srcChainId=56&srcChainTokenIn=0x0000000000000000000000000000000000000000&srcChainTokenInAmount=30000000000000000&dstChainId=7565164&dstChainTokenOut=11111111111111111111111111111111&dstChainTokenOutAmount=auto&dstChainTokenOutRecipient=FziT2V4zLB3g6e1wTfMrurEQHSJ5QiXeg4FLrCyoN7hj&srcChainOrderAuthorityAddress=0x676f9336e1F43214333619fE3a25d87C5026c8bf&dstChainOrderAuthorityAddress=FziT2V4zLB3g6e1wTfMrurEQHSJ5QiXeg4FLrCyoN7hj
+    interval: 30m
+    conditions:
+      - '[STATUS] == any(200)'
+      - '[BODY] == pat(*tx*)'
+      - '[RESPONSE_TIME] < 10000'
+  - name: '[DeBridge] (0.1 SOL on Solana) -> (ETH on Polygon)'
+    group: debridge
+    url: >-
+      https://dln.debridge.finance/v1.0/dln/order/create-tx?srcChainId=7565164&srcChainTokenIn=11111111111111111111111111111111&srcChainTokenInAmount=100000000&dstChainId=137&dstChainTokenOut=0x0000000000000000000000000000000000000000&dstChainTokenOutAmount=auto&dstChainTokenOutRecipient=0x8Ab2ec87870FCde4B11E4a67423107A723626671&srcChainOrderAuthorityAddress=FziT2V4zLB3g6e1wTfMrurEQHSJ5QiXeg4FLrCyoN7hj&dstChainOrderAuthorityAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671
+    interval: 30m
+    conditions:
+      - '[STATUS] == any(200)'
+      - '[BODY] == pat(*tx*)'
+      - '[RESPONSE_TIME] < 10000'
+  - name: '[DeBridge] (30 POL on Polygon) -> (native on Base)'
+    group: debridge
+    url: >-
+      https://dln.debridge.finance/v1.0/dln/order/create-tx?srcChainId=137&srcChainTokenIn=0x0000000000000000000000000000000000000000&srcChainTokenInAmount=30000000000000000000&dstChainId=8453&dstChainTokenOut=0x0000000000000000000000000000000000000000&dstChainTokenOutAmount=auto&dstChainTokenOutRecipient=0x8Ab2ec87870FCde4B11E4a67423107A723626671&srcChainOrderAuthorityAddress=0x676f9336e1F43214333619fE3a25d87C5026c8bf&dstChainOrderAuthorityAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671&prependOperatingExpenses=false
+    interval: 30m
+    conditions:
+      - '[STATUS] == any(200)'
+      - '[BODY] == pat(*tx*)'
+      - '[RESPONSE_TIME] < 10000'
+  - name: '[DeBridge] (30 POL on Polygon) -> (SOL on Solana)'
+    group: debridge
+    url: >-
+      https://dln.debridge.finance/v1.0/dln/order/create-tx?srcChainId=137&srcChainTokenIn=0x0000000000000000000000000000000000000000&srcChainTokenInAmount=30000000000000000000&dstChainId=7565164&dstChainTokenOut=11111111111111111111111111111111&dstChainTokenOutAmount=auto&dstChainTokenOutRecipient=FziT2V4zLB3g6e1wTfMrurEQHSJ5QiXeg4FLrCyoN7hj&srcChainOrderAuthorityAddress=0x676f9336e1F43214333619fE3a25d87C5026c8bf&dstChainOrderAuthorityAddress=FziT2V4zLB3g6e1wTfMrurEQHSJ5QiXeg4FLrCyoN7hj
+    interval: 30m
+    conditions:
+      - '[STATUS] == any(200)'
+      - '[BODY] == pat(*tx*)'
+      - '[RESPONSE_TIME] < 10000'
+  - name: '[DeBridge] (0.1 SOL on Solana) -> (ETH on Base)'
+    group: debridge
+    url: >-
+      https://dln.debridge.finance/v1.0/dln/order/create-tx?srcChainId=7565164&srcChainTokenIn=11111111111111111111111111111111&srcChainTokenInAmount=100000000&dstChainId=8453&dstChainTokenOut=0x0000000000000000000000000000000000000000&dstChainTokenOutAmount=auto&dstChainTokenOutRecipient=0x8Ab2ec87870FCde4B11E4a67423107A723626671&srcChainOrderAuthorityAddress=FziT2V4zLB3g6e1wTfMrurEQHSJ5QiXeg4FLrCyoN7hj&dstChainOrderAuthorityAddress=0x8Ab2ec87870FCde4B11E4a67423107A723626671
+    interval: 30m
+    conditions:
+      - '[STATUS] == any(200)'
+      - '[BODY] == pat(*tx*)'
+      - '[RESPONSE_TIME] < 10000'
+  - name: '[DeBridge] (0.01 ETH on Ethereum) -> (Elephant on Solana)'
+    group: debridge
+    url: >-
+      https://dln.debridge.finance/v1.0/dln/order/create-tx?srcChainId=1&srcChainTokenIn=0x0000000000000000000000000000000000000000&srcChainTokenInAmount=10000000000000000&dstChainId=7565164&dstChainTokenOut=9mV4WUukVsva5wYcYW4veo34CNDiF44sh3Ji65JNdvh5&dstChainTokenOutAmount=auto&dstChainTokenOutRecipient=FziT2V4zLB3g6e1wTfMrurEQHSJ5QiXeg4FLrCyoN7hj&srcChainOrderAuthorityAddress=0x676f9336e1F43214333619fE3a25d87C5026c8bf&dstChainOrderAuthorityAddress=FziT2V4zLB3g6e1wTfMrurEQHSJ5QiXeg4FLrCyoN7hj
+    interval: 30m
+    conditions:
+      - '[STATUS] == any(200)'
+      - '[BODY] == pat(*tx*)'
+      - '[RESPONSE_TIME] < 10000'
+  - name: '[Odos Swap] (5 USDC on Base) -> (WETH on Base)'
+    group: odos_swap
+    url: https://api.odos.xyz/sor/quote/v2
+    method: POST
+    body: >-
+      {"chainId":8453,"compact":true,"inputTokens":[{"tokenAddress":"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913","amount":"5000000"}],"outputTokens":[{"tokenAddress":"0x4200000000000000000000000000000000000006","proportion":1}],"userAddr":"0x8Ab2ec87870FCde4B11E4a67423107A723626671","slippageLimitPercent":0.3,"sourceBlacklist":[],"sourceWhitelist":[]}
+    interval: 15m
+    conditions:
+      - '[STATUS] == 200'
+      - '[BODY] == pat(*pathId*)'
+      - '[RESPONSE_TIME] < 10000'
+  - name: '[Odos Swap] (5 USDC on Ethereum) -> (WETH on Ethereum)'
+    group: odos_swap
+    url: https://api.odos.xyz/sor/quote/v2
+    method: POST
+    body: >-
+      {"chainId":1,"compact":true,"inputTokens":[{"tokenAddress":"0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48","amount":"5000000"}],"outputTokens":[{"tokenAddress":"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2","proportion":1}],"userAddr":"0x8Ab2ec87870FCde4B11E4a67423107A723626671","slippageLimitPercent":0.3,"sourceBlacklist":[],"sourceWhitelist":[]}
+    interval: 15m
+    conditions:
+      - '[STATUS] == 200'
+      - '[BODY] == pat(*pathId*)'
+      - '[RESPONSE_TIME] < 10000'
+  - name: '[Odos Swap] (5 USDC on Arbitrum) -> (WETH on Arbitrum)'
+    group: odos_swap
+    url: https://api.odos.xyz/sor/quote/v2
+    method: POST
+    body: >-
+      {"chainId":42161,"compact":true,"inputTokens":[{"tokenAddress":"0xaf88d065e77c8cC2239327C5EDb3A432268e5831","amount":"5000000"}],"outputTokens":[{"tokenAddress":"0x82af49447d8a07e3bd95bd0d56f35241523fbab1","proportion":1}],"userAddr":"0x8Ab2ec87870FCde4B11E4a67423107A723626671","slippageLimitPercent":0.3,"sourceBlacklist":[],"sourceWhitelist":[]}
+    interval: 15m
+    conditions:
+      - '[STATUS] == 200'
+      - '[BODY] == pat(*pathId*)'
+      - '[RESPONSE_TIME] < 10000'
+  - name: '[Odos Swap] (5 USDC on BSC) -> (WETH on BSC)'
+    group: odos_swap
+    url: https://api.odos.xyz/sor/quote/v2
+    method: POST
+    body: >-
+      {"chainId":56,"compact":true,"inputTokens":[{"tokenAddress":"0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d","amount":"5000000"}],"outputTokens":[{"tokenAddress":"0x2170ed0880ac9a755fd29b2688956bd959f933f8","proportion":1}],"userAddr":"0x8Ab2ec87870FCde4B11E4a67423107A723626671","slippageLimitPercent":0.3,"sourceBlacklist":[],"sourceWhitelist":[]}
+    interval: 15m
+    conditions:
+      - '[STATUS] == 200'
+      - '[BODY] == pat(*pathId*)'
+      - '[RESPONSE_TIME] < 10000'
+  - name: '[Odos Swap] (5 USDC on Polygon) -> (WETH on Polygon)'
+    group: odos_swap
+    url: https://api.odos.xyz/sor/quote/v2
+    method: POST
+    body: >-
+      {"chainId":137,"compact":true,"inputTokens":[{"tokenAddress":"0x3c499c542cef5e3811e1192ce70d8cc03d5c3359","amount":"5000000"}],"outputTokens":[{"tokenAddress":"0x7ceb23fd6bc0add59e62ac25578270cff1b9f619","proportion":1}],"userAddr":"0x8Ab2ec87870FCde4B11E4a67423107A723626671","slippageLimitPercent":0.3,"sourceBlacklist":[],"sourceWhitelist":[]}
+    interval: 15m
+    conditions:
+      - '[STATUS] == 200'
+      - '[BODY] == pat(*pathId*)'
+      - '[RESPONSE_TIME] < 10000'
+  - name: >-
+      [Zapper] Refetch Token Balances for
+      0x8Ab2ec87870FCde4B11E4a67423107A723626671
+    group: zapper
+    method: POST
+    headers:
+      Authorization: Basic MTRlZGM5OTMtOGRlYy00MzQxLWEzNjItOTljMDBlZmYxOTBiOg==
+    url: >-
+      https://api.zapper.xyz/v2/balances/tokens?addresses%5B%5D=0x8Ab2ec87870FCde4B11E4a67423107A723626671
+    interval: 15m
+    conditions:
+      - '[STATUS] == any(201)'
+      - '[BODY] == pat(*jobId*)'
+      - '[RESPONSE_TIME] < 5000'
+  - name: >-
+      [Zapper] Refetch App Balances for
+      0x8Ab2ec87870FCde4B11E4a67423107A723626671
+    group: zapper
+    method: POST
+    headers:
+      Authorization: Basic MTRlZGM5OTMtOGRlYy00MzQxLWEzNjItOTljMDBlZmYxOTBiOg==
+    url: >-
+      https://api.zapper.xyz/v2/balances/apps?addresses%5B%5D=0x8Ab2ec87870FCde4B11E4a67423107A723626671
+    interval: 15m
+    conditions:
+      - '[STATUS] == any(201)'
+      - '[BODY] == pat(*jobId*)'
+      - '[RESPONSE_TIME] < 5000'
