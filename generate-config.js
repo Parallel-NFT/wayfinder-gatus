@@ -49,7 +49,7 @@ const config = {
   intervals: {
     lifi_bridge: "3h",
     lifi_swap: "3h",
-    http: "15m",
+    http: "10s",
     debridge: "30m",
     odos_swap: "15m",
     zapper: "15m",
@@ -58,7 +58,7 @@ const config = {
     // in ms
     lifi_bridge: 10000,
     lifi_swap: 10000,
-    http: 5000,
+    http: 2000,
     debridge: 10000,
     odos_swap: 10000,
     zapper: 5000,
@@ -72,16 +72,7 @@ const config = {
     amountWei: "5000000", // 5 USDC with 6 decimals
     slippageLimitPercent: 0.3,
   },
-  http: {
-    endpoints: [
-      {
-        name: "Wayfinder Login",
-        group: "api-health",
-        url: "https://dev.wayfinder.ai",
-        expectedStatus: 200,
-      },
-    ],
-  },
+  http: {},
 };
 
 const generateLifiBridgeChecks = () => {
@@ -173,16 +164,44 @@ const generateLifiSwapChecks = () => {
 };
 
 const generateHttpChecks = () => {
-  return config.http.endpoints.map((endpoint) => ({
-    name: endpoint.name,
-    group: endpoint.group,
-    url: endpoint.url,
-    interval: config.intervals.http,
-    conditions: [
-      `[STATUS] == ${endpoint.expectedStatus}`,
-      `[RESPONSE_TIME] < ${config.responseTimes.http}`,
-    ],
-  }));
+  return [
+    {
+      name: "Wayfinder Login",
+      group: "api-health",
+      url: "https://app.wayfinder.ai",
+      conditions: [
+        `[STATUS] == ${200}`,
+        `[RESPONSE_TIME] < ${config.responseTimes.http}`,
+      ],
+      alerts: [
+        {
+          type: "slack",
+          "failure-threshold": 5,
+          description: "Wayfinder NextJS is down",
+          "send-on-resolved": true,
+        },
+      ],
+      interval: config.intervals.http,
+    },
+    {
+      name: "Wayfinder Django",
+      group: "api-health",
+      url: "https://app.wayfinder.ai/api/v1/chat_ai_proxy/abi/?contract_address=0xef4fb24ad0916217251f553c0596f8edc630eb66&chain_name=base",
+      conditions: [
+        `[STATUS] == ${200}`,
+        `[RESPONSE_TIME] < ${config.responseTimes.http}`,
+      ],
+      alerts: [
+        {
+          type: "slack",
+          "failure-threshold": 5,
+          description: "Wayfinder Django is down",
+          "send-on-resolved": true,
+        },
+      ],
+      interval: config.intervals.http,
+    },
+  ];
 };
 
 const generateOdosSwapChecks = () => {
@@ -378,6 +397,12 @@ const configuration = {
     header: "Wayfinder Blame Dashboard",
     description: "Days since last incident: 398",
     logo: "https://pbs.twimg.com/profile_images/1768421252450934784/eEJYGxvM_400x400.jpg",
+  },
+  alerting: {
+    slack: {
+      "webhook-url":
+        "https://hooks.slack.com/services/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",
+    },
   },
   endpoints: [
     ...generateLifiBridgeChecks(),
