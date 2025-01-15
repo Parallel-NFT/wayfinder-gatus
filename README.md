@@ -3,6 +3,7 @@
 Private Gatus instance for health checking dashboard. Used for downstream and self checking.
 
 `config.yaml` - Gatus config, GENERATED.
+
 `generate-config.js` - Go nuts, then `node generate-config.js`
 
 Test localy:
